@@ -1,10 +1,8 @@
 @import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@import "./styles/main.css";
+/* @tailwind base; */
+/* @tailwind components; */
+/* @tailwind utilities; */
 
 :root {
   @apply bg-gray-800 text-white;
@@ -12,4 +10,6 @@
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
+  padding: 0;
+  margin: 0;
 }
