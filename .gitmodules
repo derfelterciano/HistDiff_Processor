@@ -1,0 +1,4 @@
+[submodule "src-tauri/HistDiff_standalone"]
+	path = src-tauri/HistDiff_standalone
+	url = git@github.com:LokeyLab/HistDiff_standalone.git
+	branch = rust_implementation
