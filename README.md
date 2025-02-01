@@ -24,3 +24,16 @@ at your computer any where!
 
 - _Planned fun feature:_
   - _Multiplate processing_
+
+## TO-DO:
+
+- [ ] Implement user input/config
+  - [x] File selection
+  - [ ] Control definitions
+    - [ ] create a pop out to select negative controls
+    - [ ] construct plate assay replica
+    - [ ] implement option for 96-well plate (optional)
+  - [ ] Well name column
+    - [ ] Implement drop down option
+- [ ] Implement Rust to Svelte API
+  - [ ] Rewrite HistDiff input to "mimick" histdiff binary
