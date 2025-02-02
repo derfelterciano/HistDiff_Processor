@@ -35,5 +35,6 @@ at your computer any where!
     - [ ] implement option for 96-well plate (optional)
   - [x] Well name column
     - [ ] Implement drop down option
+      - Use the following: [carbon components](https://svelte.carbondesignsystem.com/)
 - [ ] Implement Rust to Svelte API
   - [ ] Rewrite HistDiff input to "mimick" histdiff binary
