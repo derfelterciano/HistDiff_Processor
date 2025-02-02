@@ -33,6 +33,7 @@ at your computer any where!
     - [ ] create a pop out to select negative controls
     - [ ] construct plate assay replica
     - [ ] implement option for 96-well plate (optional)
+  - [x] Additional meta information to ignore
   - [x] Well name column
     - [ ] Implement drop down option
       - Use the following: [carbon components](https://svelte.carbondesignsystem.com/)

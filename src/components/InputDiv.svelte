@@ -1,12 +1,16 @@
 <script lang="ts">
 	import FileSelect from "./inputComps/FileSelect.svelte";
+	// import Combobox from "./inputComps/Combobox.svelte";
+	import DynamicText from "./inputComps/DynamicText.svelte";
 
 	let file_path: string = "";
 	let well_col: string = "";
 	let headers: string[] = [];
+	let additionalMeta: string[] = [];
 
 	const handleSubmit = (): void => {
-		console.log("file: ", file_path, well_col, headers);
+		console.log("file: ", file_path, "well: ", well_col, headers);
+		console.log("meta: ", additionalMeta);
 	};
 </script>
 
@@ -25,6 +29,8 @@
 		<h6>Meta Information</h6>
 		<label>
 			<span class="mr-2">Well Name Column:</span>
+			<!-- EXPERIMENTAL Combobox-->
+			<!-- <Combobox items={headers} bind:selectedValue={well_col} /> -->
 			<input
 				class="bg-white text-black text-center border-2 border-white rounded-sm"
 				type="text"
@@ -32,6 +38,11 @@
 				bind:value={well_col}
 			/>
 		</label>
+
+		<DynamicText
+			title="Additional Meta"
+			bind:arrayOptions={additionalMeta}
+		/>
 	</div>
 
 	<button
