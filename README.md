@@ -33,7 +33,7 @@ at your computer any where!
     - [ ] create a pop out to select negative controls
     - [ ] construct plate assay replica
     - [ ] implement option for 96-well plate (optional)
-  - [ ] Well name column
+  - [x] Well name column
     - [ ] Implement drop down option
 - [ ] Implement Rust to Svelte API
   - [ ] Rewrite HistDiff input to "mimick" histdiff binary

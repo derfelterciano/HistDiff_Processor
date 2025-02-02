@@ -2,9 +2,11 @@
 	import FileSelect from "./inputComps/FileSelect.svelte";
 
 	let file_path: string = "";
+	let well_col: string = "";
+	let headers: string[] = [];
 
 	const handleSubmit = (): void => {
-		console.log("file: ", file_path);
+		console.log("file: ", file_path, well_col, headers);
 	};
 </script>
 
@@ -14,10 +16,23 @@
 	>
 		User Configuration
 	</h3>
-	<label class="select-data flex items-center w-full">
+	<label class="select-data flex items-center px-2 w-full">
 		<span class="mr-2">Dataset:</span>
-		<FileSelect bind:file_path />
+		<FileSelect bind:file_path bind:headers />
 	</label>
+
+	<div class="meta-information">
+		<h6>Meta Information</h6>
+		<label>
+			<span class="mr-2">Well Name Column:</span>
+			<input
+				class="bg-white text-black text-center border-2 border-white rounded-sm"
+				type="text"
+				placeholder="Enter column name"
+				bind:value={well_col}
+			/>
+		</label>
+	</div>
 
 	<button
 		type="submit"
@@ -30,6 +45,10 @@
 	@reference 'tailwindcss';
 
 	.UserInput {
-		@apply flex flex-col items-center border-2 rounded-md max-w-md pb-4 px-2;
+		@apply flex flex-col items-center border-2 rounded-md max-w-md pb-4;
+	}
+
+	.meta-information {
+		@apply flex flex-col items-center border-2 rounded-sm p-2 mt-4 w-[95%];
 	}
 </style>
