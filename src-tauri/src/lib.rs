@@ -1,5 +1,9 @@
 #![allow(unused_imports)]
+mod tauri_components;
+
+use tauri_components::open_control_selector_win;
 use HistDiff_standalone::*;
+
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -12,7 +16,7 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![greet, open_control_selector_win])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -2,6 +2,7 @@
 	import FileSelect from "./inputComps/FileSelect.svelte";
 	// import Combobox from "./inputComps/Combobox.svelte";
 	import DynamicText from "./inputComps/DynamicText.svelte";
+	import ControlSelector from "./inputComps/ControlSelector.svelte";
 
 	let file_path: string = "";
 	let well_col: string = "";
@@ -27,7 +28,7 @@
 
 	<div class="meta-information">
 		<h6>Meta Information</h6>
-		<label>
+		<label class="mb-3">
 			<span class="mr-2">Well Name Column:</span>
 			<!-- EXPERIMENTAL Combobox-->
 			<!-- <Combobox items={headers} bind:selectedValue={well_col} /> -->
@@ -43,6 +44,11 @@
 			title="Additional Meta"
 			bind:arrayOptions={additionalMeta}
 		/>
+	</div>
+
+	<div class="negative-controls">
+		<h6>Negative control selection</h6>
+		<ControlSelector />
 	</div>
 
 	<button
