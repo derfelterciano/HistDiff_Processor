@@ -15,10 +15,10 @@
 <main
 	class="main-container flex flex-col items-center justify-center w-full p-2"
 >
-	<h1 class="text-center text-3xl font-bold mx-auto">
+	<h1 class="text-center text-3xl font-bold mx-auto w-full">
 		HistDiff Pipeline Processor
 	</h1>
-	<div class="main-div flex flex-col px-2 w-[100%]">
+	<div class="main-div flex flex-col items-center px-2 w-full">
 		<InputDiv />
 	</div>
 </main>

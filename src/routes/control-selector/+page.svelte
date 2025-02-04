@@ -1,9 +1,23 @@
 <script lang="ts">
 	import { emit } from "@tauri-apps/api/event";
 	import { getCurrentWindow } from "@tauri-apps/api/window";
-	import { onMount } from "svelte";
+	import { page } from "$app/state";
+	import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
+
+	// Svelte 5 way of retrieving parameters
+	const plateDims = $derived(page.url.searchParams.get("plate"));
 
 	let selectedWells: string[] = [];
+	const genPlateConfig = (plate: number): [row: number, col: number] => {
+		switch (plate) {
+			case 384:
+				return [24, 16];
+			case 96:
+				return [12, 8];
+			default:
+				return [0, 0];
+		}
+	};
 
 	// Toggle well selection
 	const toggleWell = (well: string) => {
@@ -27,17 +41,17 @@
 </script>
 
 <div class="control-selector">
-	<h3>Select Wells for Negative Controls</h3>
+	<h3>Select Wells for {plateDims}-well plate</h3>
 
 	<!-- 16x24 Well Plate Grid -->
-	<div class="grid">
+	<div class="grid flex flex-col item-center">
 		{#each Array(16) as _, row}
 			<div class="row">
 				{#each Array(24) as _, col}
 					<button
 						class="well"
 						class:selected={selectedWells.includes(`${row}-${col}`)}
-						on:click={() => toggleWell(`${row}-${col}`)}
+						onclick={() => toggleWell(`${row}-${col}`)}
 					>
 						{row * 24 + col + 1}
 					</button>
@@ -48,8 +62,8 @@
 
 	<!-- Action Buttons -->
 	<div class="actions">
-		<button class="clear" on:click={clearSelection}>Clear</button>
-		<button class="confirm" on:click={confirmSelection}>Confirm</button>
+		<button class="clear" onclick={clearSelection}>Clear</button>
+		<button class="confirm" onclick={confirmSelection}>Confirm</button>
 	</div>
 </div>
 

@@ -62,7 +62,7 @@
 	@reference 'tailwindcss';
 
 	.UserInput {
-		@apply flex flex-col items-center border-2 rounded-md max-w-md pb-4;
+		@apply flex flex-col items-center border-2 rounded-md max-w-md pb-4 w-[500px];
 	}
 
 	.meta-information {

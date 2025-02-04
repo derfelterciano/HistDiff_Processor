@@ -13,8 +13,9 @@
 		"windows": [
 			{
 				"title": "histdiff-pipeline",
-				"width": 2560,
-				"height": 1440
+				"width": 500,
+				"height": 700,
+				"resizable": false
 			}
 		],
 		"security": {
