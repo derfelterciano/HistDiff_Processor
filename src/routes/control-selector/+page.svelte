@@ -61,23 +61,25 @@
 <div class="control-selector">
 	<h3>Select Wells for {plateDims}-well plate</h3>
 
-	<div class="grid gap-2 grid-rows-{colSize}">
-		{#each rows as row}
-			<div class="grid grid-cols-{rowSize} gap-2">
-				{#each cols as col}
-					<button
-						class="border-2 bg-white text-black rounded-md hover:bg-gray-400"
-						class:selected={selectedWells.has(`${row}${col}`)}
-						onclick={() => toggleWell(`${row}${col}`)}
-						>{`${row}${col}`}</button
-					>
-				{/each}
-			</div>
-		{/each}
+	<div class="well-grid">
+		<div class="grid gap-2 grid-rows-{colSize}">
+			{#each rows as row}
+				<div class="grid grid-cols-{rowSize} gap-2">
+					{#each cols as col}
+						<button
+							class="text-center border-2 bg-white text-black text-sm rounded-md hover:bg-gray-400 p-1"
+							class:selected={selectedWells.has(`${row}${col}`)}
+							onclick={() => toggleWell(`${row}${col}`)}
+							>{`${row}${col}`}</button
+						>
+					{/each}
+				</div>
+			{/each}
+		</div>
 	</div>
 
 	<!-- Action Buttons -->
-	<div class="actions flex flex-col items-center m-4">
+	<div class="actions flex gap-4 items-center m-4">
 		<button class="clear" onclick={clearSelection}>Clear</button>
 		<button class="confirm" onclick={confirmSelection}>Confirm</button>
 	</div>
@@ -89,16 +91,18 @@
 		@apply flex flex-col items-center;
 	}
 
+	.well-grid {
+		@apply px-4;
+	}
+
 	.selected {
 		@apply bg-blue-500 text-black hover:bg-blue-600;
 	}
 
 	.clear {
-		background: red;
-		color: white;
+		@apply bg-red-400 hover:bg-red-500 rounded px-4 py-2;
 	}
 	.confirm {
-		background: green;
-		color: white;
+		@apply bg-green-600 hover:bg-green-700 rounded px-4 py-2;
 	}
 </style>
