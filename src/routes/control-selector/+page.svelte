@@ -2,12 +2,16 @@
 	import { emit } from "@tauri-apps/api/event";
 	import { getCurrentWindow } from "@tauri-apps/api/window";
 	import { page } from "$app/state";
-	import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 
 	// Svelte 5 way of retrieving parameters
-	const plateDims = $derived(page.url.searchParams.get("plate"));
+	// const plateDims: number = $derived(
+	// 	Number(page.url.searchParams.get("plate") || 384),
+	// );
 
-	let selectedWells: string[] = [];
+	const plateDims: number = 384;
+
+	let selectedWells = $state(new Set<string>());
+
 	const genPlateConfig = (plate: number): [row: number, col: number] => {
 		switch (plate) {
 			case 384:
@@ -19,13 +23,27 @@
 		}
 	};
 
-	// Toggle well selection
-	const toggleWell = (well: string) => {
-		if (selectedWells.includes(well)) {
-			selectedWells = selectedWells.filter((w) => w !== well);
+	const plateGrid = (): [number, number] => {
+		return genPlateConfig(plateDims);
+	};
+	const [rowSize, colSize] = plateGrid();
+
+	const rows: string[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		.slice(0, colSize)
+		.split("");
+	const cols: string[] = Array.from({ length: rowSize }, (_, i) =>
+		(i + 1).toString().padStart(2, "0"),
+	);
+
+	const toggleWell = (id: string): void => {
+		if (selectedWells.has(id)) {
+			selectedWells.delete(id);
 		} else {
-			selectedWells = [...selectedWells, well];
+			selectedWells.add(id);
 		}
+
+		selectedWells = new Set(selectedWells);
+		console.log("selected: ", selectedWells);
 	};
 
 	// Send the selected wells back to ControlSelector.svelte
@@ -36,65 +54,45 @@
 
 	// Clear selection
 	const clearSelection = () => {
-		selectedWells = [];
+		selectedWells = new Set<string>();
 	};
 </script>
 
 <div class="control-selector">
 	<h3>Select Wells for {plateDims}-well plate</h3>
 
-	<!-- 16x24 Well Plate Grid -->
-	<div class="grid flex flex-col item-center">
-		{#each Array(16) as _, row}
-			<div class="row">
-				{#each Array(24) as _, col}
+	<div class="grid gap-2 grid-rows-{colSize}">
+		{#each rows as row}
+			<div class="grid grid-cols-{rowSize} gap-2">
+				{#each cols as col}
 					<button
-						class="well"
-						class:selected={selectedWells.includes(`${row}-${col}`)}
-						onclick={() => toggleWell(`${row}-${col}`)}
+						class="border-2 bg-white text-black rounded-md hover:bg-gray-400"
+						class:selected={selectedWells.has(`${row}${col}`)}
+						onclick={() => toggleWell(`${row}${col}`)}
+						>{`${row}${col}`}</button
 					>
-						{row * 24 + col + 1}
-					</button>
 				{/each}
 			</div>
 		{/each}
 	</div>
 
 	<!-- Action Buttons -->
-	<div class="actions">
+	<div class="actions flex flex-col items-center m-4">
 		<button class="clear" onclick={clearSelection}>Clear</button>
 		<button class="confirm" onclick={confirmSelection}>Confirm</button>
 	</div>
 </div>
 
 <style>
+	@reference 'tailwindcss';
 	.control-selector {
-		text-align: center;
-		padding: 1rem;
+		@apply flex flex-col items-center;
 	}
-	.grid {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
+
+	.selected {
+		@apply bg-blue-500 text-black hover:bg-blue-600;
 	}
-	.row {
-		display: flex;
-		gap: 0.5rem;
-	}
-	.well {
-		width: 30px;
-		height: 30px;
-		background: lightgray;
-		border: 1px solid black;
-		cursor: pointer;
-	}
-	.well.selected {
-		background: blue;
-		color: white;
-	}
-	.actions {
-		margin-top: 1rem;
-	}
+
 	.clear {
 		background: red;
 		color: white;
