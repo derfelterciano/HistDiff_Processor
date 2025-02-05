@@ -4,7 +4,7 @@
 
 	export let selectedWells: string[] = [];
 
-	let plateFormat: number = 384;
+	export let plateFormat: number = 384;
 	const openControlSelector = async (plateFormat: number): Promise<void> => {
 		await invoke("open_control_selector_win", {
 			plateFormat: plateFormat,

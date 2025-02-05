@@ -8,6 +8,7 @@
 	let well_col: string = "";
 	let headers: string[] = [];
 	let additionalMeta: string[] = [];
+	let plateFormat: number = 384;
 
 	const handleSubmit = (): void => {
 		console.log("file: ", file_path, "well: ", well_col, headers);
@@ -24,6 +25,17 @@
 	<label class="select-data flex items-center px-2 w-full">
 		<span class="mr-2">Dataset:</span>
 		<FileSelect bind:file_path bind:headers />
+	</label>
+
+	<label class="mt-4 w-full px-2">
+		<span class="mr-2">Plate format:</span>
+		<select
+			class="border-2 rounded-sm text-white bg-gray-400 hover:bg-gray-500 appearance-auto px-2"
+			bind:value={plateFormat}
+		>
+			<option value={384}>384-Well</option>
+			<option value={96}>96-Well</option>
+		</select>
 	</label>
 
 	<div class="meta-information">
@@ -48,7 +60,7 @@
 
 	<div class="negative-controls">
 		<h6>Negative control selection</h6>
-		<ControlSelector />
+		<ControlSelector bind:plateFormat />
 	</div>
 
 	<button

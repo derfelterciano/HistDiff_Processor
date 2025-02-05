@@ -2,7 +2,7 @@ use tauri::{Manager, WebviewUrl, WebviewWindowBuilder};
 
 #[tauri::command]
 pub async fn open_control_selector_win(app: tauri::AppHandle, plate_format: u32) {
-    let label = format!("control-selector-{}", plate_format);
+    let label = format!("control-selector");
 
     // window open?
     if app.get_webview_window(&label).is_none() {

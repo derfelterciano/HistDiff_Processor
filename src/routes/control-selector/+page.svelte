@@ -4,11 +4,13 @@
 	import { page } from "$app/state";
 
 	// Svelte 5 way of retrieving parameters
-	// const plateDims: number = $derived(
-	// 	Number(page.url.searchParams.get("plate") || 384),
-	// );
 
-	const plateDims: number = 384;
+	//get plate dimensions
+	const plateDims: number = $derived(
+		Number(page.url.searchParams.get("plate") || 384),
+	);
+
+	// const plateDims: number = 384;
 
 	let selectedWells = $state(new Set<string>());
 
@@ -95,7 +97,7 @@
 	}
 
 	.well-grid {
-		@apply p-4;
+		@apply p-2;
 	}
 
 	.selected {
