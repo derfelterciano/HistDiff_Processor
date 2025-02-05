@@ -50,7 +50,8 @@
 
 	// Send the selected wells back to ControlSelector.svelte
 	const confirmSelection = async () => {
-		await emit("control-selection-complete", { selectedWells });
+		const selectedPayload = Array.from(selectedWells);
+		await emit("control-selection-complete", { selectedPayload });
 		getCurrentWindow().close();
 	};
 
