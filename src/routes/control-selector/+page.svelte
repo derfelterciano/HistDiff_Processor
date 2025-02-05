@@ -62,9 +62,12 @@
 	<h3>Select Wells for {plateDims}-well plate</h3>
 
 	<div class="well-grid">
-		<div class="grid gap-2 grid-rows-{colSize}">
+		<div class="grid" style="grid-template-rows: repeat({colSize}, auto);">
 			{#each rows as row}
-				<div class="grid grid-cols-{rowSize} gap-2">
+				<div
+					class="grid"
+					style="grid-template-columns: repeat({rowSize}, 1fr);"
+				>
 					{#each cols as col}
 						<button
 							class="text-center border-2 bg-white text-black text-sm rounded-md hover:bg-gray-400 p-1"
@@ -92,7 +95,7 @@
 	}
 
 	.well-grid {
-		@apply px-4;
+		@apply p-4;
 	}
 
 	.selected {
