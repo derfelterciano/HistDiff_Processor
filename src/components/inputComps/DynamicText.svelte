@@ -55,7 +55,7 @@
 	}
 	.scroll-area {
 		@apply w-full;
-		max-height: 250px;
+		max-height: 150px;
 		overflow-y: auto;
 	}
 </style>
