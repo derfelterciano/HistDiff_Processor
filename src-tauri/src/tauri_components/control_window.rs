@@ -6,7 +6,7 @@ pub async fn open_control_selector_win(
     plate_format: u32,
     modify: bool,
     id: u32,
-    inital_wells: String,
+    initial_wells: String,
 ) {
     let label = format!("control-selector-{}", id);
 
@@ -17,8 +17,8 @@ pub async fn open_control_selector_win(
             label,
             WebviewUrl::App(
                 format!(
-                    "/control-selector?plate={}&modify={}&id={}&initalWells={}",
-                    plate_format, modify, id, inital_wells
+                    "/control-selector?plate={}&modify={}&id={}&initialWells={}",
+                    plate_format, modify, id, initial_wells
                 )
                 .into(),
             ),

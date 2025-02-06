@@ -4,12 +4,15 @@
 	import DynamicText from "./inputComps/DynamicText.svelte";
 	import ControlSelector from "./inputComps/ControlSelector.svelte";
 	import { type ControlDefinition } from "../types/controlType";
+	import MultiControls from "./inputComps/MultiControls.svelte";
 
 	let file_path: string = "";
 	let well_col: string = "";
 	let headers: string[] = [];
 	let additionalMeta: string[] = [];
 	let plateFormat: number = 384;
+
+	let negativeControls: ControlDefinition | null = null;
 
 	let controls: Map<number, ControlDefinition> = new Map<
 		number,
@@ -19,20 +22,21 @@
 	/**
 	 * function for updating control hash map
 	 */
-	function controlSelectComplete(event) {
-		const { controlID, wells, title } = event.detail;
-		controls.set(controlID, { id: controlID, wells, title });
-		console.log(
-			"Parent stored data for controlID:",
-			controlID,
-			wells,
-			title,
-		);
-	}
+	// function controlSelectComplete(event) {
+	// 	const { controlID, wells, title } = event.detail;
+	// 	controls.set(controlID, { id: controlID, wells, title });
+	// 	console.log(
+	// 		"Parent stored data for controlID:",
+	// 		controlID,
+	// 		wells,
+	// 		title,
+	// 	);
+	// }
 
 	const handleSubmit = (): void => {
 		console.log("file: ", file_path, "well: ", well_col, headers);
 		console.log("meta: ", additionalMeta);
+		console.log(`n-controls: ${JSON.stringify(negativeControls)}`);
 	};
 </script>
 
@@ -78,10 +82,16 @@
 		/>
 	</div>
 
-	<div class="negative-controls">
-		<h6>Negative control selection</h6>
-		<ControlSelector bind:plateFormat id={0} />
+	<div class="negative-controls flex flex-col items-center mt-2">
+		<h6 class="font-bold mb-2">Negative control selection</h6>
+		<ControlSelector
+			bind:plateFormat
+			id={0}
+			bind:controlDefinition={negativeControls}
+		/>
 	</div>
+
+	<MultiControls />
 
 	<button
 		type="submit"

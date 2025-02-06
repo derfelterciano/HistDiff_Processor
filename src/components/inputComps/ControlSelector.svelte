@@ -4,7 +4,7 @@
 	import { onMount, onDestroy } from "svelte";
 	import type { ControlDefinition } from "../../types/controlType";
 
-	export let selectedWells: string[] = [];
+	// export let selectedWells: string[] = [];
 	export let modifiable: boolean = false; // WARN: this is set a true remove this
 	export let id: number;
 	export let controlDefinition: ControlDefinition | null;
@@ -14,12 +14,12 @@
 		plateFormat: number,
 		modify: boolean,
 	): Promise<void> => {
-		const initData = JSON.stringify({ wells: selectedWells });
+		const initData = JSON.stringify({ wells: controlDefinition?.wells });
 		await invoke("open_control_selector_win", {
 			plateFormat: plateFormat,
 			modify: modify,
 			id: id,
-			initalWells: initData,
+			initialWells: initData,
 		});
 	};
 
@@ -39,6 +39,7 @@
 					id: payload.id,
 					title: payload.title,
 				};
+				controlDefinition = controlPayload;
 				console.log("controls-recieved: ", controlPayload);
 			},
 		);
