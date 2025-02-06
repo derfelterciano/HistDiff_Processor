@@ -3,12 +3,32 @@
 	// import Combobox from "./inputComps/Combobox.svelte";
 	import DynamicText from "./inputComps/DynamicText.svelte";
 	import ControlSelector from "./inputComps/ControlSelector.svelte";
+	import { type ControlDefinition } from "../types/controlType";
 
 	let file_path: string = "";
 	let well_col: string = "";
 	let headers: string[] = [];
 	let additionalMeta: string[] = [];
 	let plateFormat: number = 384;
+
+	let controls: Map<number, ControlDefinition> = new Map<
+		number,
+		ControlDefinition
+	>();
+
+	/**
+	 * function for updating control hash map
+	 */
+	function controlSelectComplete(event) {
+		const { controlID, wells, title } = event.detail;
+		controls.set(controlID, { id: controlID, wells, title });
+		console.log(
+			"Parent stored data for controlID:",
+			controlID,
+			wells,
+			title,
+		);
+	}
 
 	const handleSubmit = (): void => {
 		console.log("file: ", file_path, "well: ", well_col, headers);
@@ -30,7 +50,7 @@
 	<label class="mt-4 w-full px-2">
 		<span class="mr-2">Plate format:</span>
 		<select
-			class="border-2 rounded-sm text-white bg-gray-400 hover:bg-gray-500 appearance-auto px-2"
+			class="border-2 rounded-sm text-black hover:bg-gray-500 appearance-auto px-2"
 			bind:value={plateFormat}
 		>
 			<option value={384}>384-Well</option>
@@ -60,7 +80,7 @@
 
 	<div class="negative-controls">
 		<h6>Negative control selection</h6>
-		<ControlSelector bind:plateFormat />
+		<ControlSelector bind:plateFormat id={0} />
 	</div>
 
 	<button

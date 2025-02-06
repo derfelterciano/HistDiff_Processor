@@ -2,6 +2,7 @@
 	import { emit } from "@tauri-apps/api/event";
 	import { getCurrentWindow } from "@tauri-apps/api/window";
 	import { page } from "$app/state";
+	import type { ControlDefinition } from "../../types/controlType";
 
 	// Svelte 5 way of retrieving parameters
 
@@ -10,9 +11,27 @@
 		Number(page.url.searchParams.get("plate") || 384),
 	);
 
-	// const plateDims: number = 384;
+	const modify: boolean = $derived(
+		page.url.searchParams.get("modify") === "true",
+	);
 
-	let selectedWells = $state(new Set<string>());
+	const id: number = $derived(Number(page.url.searchParams.get("id") || 0));
+	const initialDataRaw = $derived(
+		page.url.searchParams.get("initialWells") || "{}",
+	);
+
+	function parsejson(): { wells: string[] } {
+		let parsed = { wells: [] };
+		try {
+			parsed = JSON.parse(initialDataRaw);
+		} catch (err) {
+			console.error("Failed to parse initial data", err);
+		}
+		return parsed;
+	}
+
+	let selectedWells = $state(new Set<string>(parsejson().wells || []));
+	let controlName: string | null = $state(null);
 
 	const genPlateConfig = (plate: number): [row: number, col: number] => {
 		switch (plate) {
@@ -51,7 +70,12 @@
 	// Send the selected wells back to ControlSelector.svelte
 	const confirmSelection = async () => {
 		const selectedPayload = Array.from(selectedWells);
-		await emit("control-selection-complete", { selectedPayload });
+		const payload: ControlDefinition = {
+			wells: selectedPayload,
+			id: id,
+			title: controlName,
+		};
+		await emit(`control-selection-complete-id${id}`, payload);
 		getCurrentWindow().close();
 	};
 
@@ -62,7 +86,23 @@
 </script>
 
 <div class="control-selector">
-	<h3>Select Wells for {plateDims}-well plate</h3>
+	<h3 class="text-xl font-bold mb-4">
+		Select Wells for {plateDims}-well plate
+	</h3>
+
+	<div class="plate-title">
+		{#if modify}
+			<label class="flex items-center gap-4 mb-2">
+				<span>Control Set Name:</span>
+				<input
+					type="text"
+					placeholder="control name"
+					class="text-black bg-white text-center border rounded"
+					bind:value={controlName}
+				/>
+			</label>
+		{/if}
+	</div>
 
 	<div class="well-grid">
 		<div class="grid" style="grid-template-rows: repeat({colSize}, auto);">
@@ -94,7 +134,7 @@
 <style>
 	@reference 'tailwindcss';
 	.control-selector {
-		@apply flex flex-col items-center;
+		@apply flex flex-col items-center p-2;
 	}
 
 	.well-grid {
