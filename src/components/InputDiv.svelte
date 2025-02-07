@@ -88,7 +88,7 @@
 		/>
 	</div>
 
-	<MultiControls bind:controls />
+	<MultiControls bind:controls bind:plateFormat />
 
 	<button
 		type="submit"

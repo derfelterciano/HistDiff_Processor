@@ -5,7 +5,7 @@
 	import type { ControlDefinition } from "../../types/controlType";
 
 	// export let selectedWells: string[] = [];
-	export let modifiable: boolean = false; // WARN: this is set a true remove this
+	export let modifiable: boolean = false;
 	export let id: number;
 	export let controlDefinition: ControlDefinition | null;
 
@@ -52,9 +52,9 @@
 	});
 </script>
 
-<div class="control-selector">
+<div class="control-selector flex-none">
 	<button
-		class="text-center bg-blue-500 hover:bg-blue-600 rounded border-2 border-white px-2 py-1"
+		class="text-center whitespace-nowrap bg-blue-500 hover:bg-blue-600 rounded border-2 border-white px-2 py-1"
 		on:click={() => openControlSelector(plateFormat, modifiable)}
 		type="button">Open Control Selector</button
 	>

@@ -6,6 +6,7 @@
 	} from "../../types/controlType";
 
 	export let controls: ControlDefinition[] = [];
+	export let plateFormat: number;
 
 	const addControl = () => {
 		controls = [...controls, EMPTY_CONTROL];
@@ -24,17 +25,28 @@
 <div class="multi-control">
 	<h6 class="font-bold mb-2 text-center">Additional Controls</h6>
 
-	<div class="control-list mb-2 px-4">
+	<div class="control-list mb-2 px-4 w-full">
 		{#each controls as _, index}
-			<div class="flex items-center gap-x-2 mb-2">
+			<div class="control-row flex items-center gap-x-1 mb-2">
 				<ControlSelector
 					id={index + 1}
 					bind:controlDefinition={controls[index]}
 					modifiable={true}
+					{plateFormat}
 				/>
+				<div
+					class="flex-1 min-w-0 bg-gray-500 text-white rounded-md ml-4 mr-2 text-center"
+				>
+					{#if controls[index].title !== null}
+						<span class="w-full">{controls[index].title}</span>
+					{:else}
+						<span class="w-full">No Title Selected</span>
+					{/if}
+				</div>
+
 				<button
 					type="button"
-					class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded"
+					class="flex-none justify-self-start w-auto bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded"
 					on:click={() => deleteControl(index)}>-</button
 				>
 			</div>
@@ -57,5 +69,8 @@
 	.control-list {
 		max-height: 200px;
 		overflow-y: auto;
+	}
+	.control-row {
+		@apply bg-purple-200 border rounded-md;
 	}
 </style>
