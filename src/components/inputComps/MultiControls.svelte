@@ -38,9 +38,9 @@
 					class="flex-1 min-w-0 bg-gray-500 text-white rounded-md ml-4 mr-2 text-center"
 				>
 					{#if controls[index].title !== null}
-						<span class="w-full">{controls[index].title}</span>
+						<span class="">{controls[index].title}</span>
 					{:else}
-						<span class="w-full">No Title Selected</span>
+						<span class="">No Title Selected</span>
 					{/if}
 				</div>
 
