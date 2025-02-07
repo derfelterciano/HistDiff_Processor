@@ -18,12 +18,11 @@
 
 	const deleteControl = (id: number) => {
 		controls = controls.filter((_, i) => i !== id);
-		console.log(controls);
 	};
 </script>
 
 <div class="multi-control">
-	<h6>Additional Controls</h6>
+	<h6 class="font-bold mb-2 text-center">Additional Controls</h6>
 
 	<div class="control-list mb-2 px-4">
 		{#each controls as _, index}

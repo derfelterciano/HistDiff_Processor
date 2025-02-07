@@ -14,11 +14,7 @@
 
 	let negativeControls: ControlDefinition | null = null;
 
-	let controls: Map<number, ControlDefinition> = new Map<
-		number,
-		ControlDefinition
-	>();
-
+	let controls: ControlDefinition[] = [];
 	/**
 	 * function for updating control hash map
 	 */
@@ -37,6 +33,7 @@
 		console.log("file: ", file_path, "well: ", well_col, headers);
 		console.log("meta: ", additionalMeta);
 		console.log(`n-controls: ${JSON.stringify(negativeControls)}`);
+		console.log(`other controls: ${JSON.stringify(controls)}`);
 	};
 </script>
 
@@ -91,7 +88,7 @@
 		/>
 	</div>
 
-	<MultiControls />
+	<MultiControls bind:controls />
 
 	<button
 		type="submit"
