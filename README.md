@@ -29,11 +29,12 @@ at your computer any where!
 
 - [ ] Implement user input/config
   - [x] File selection
-  - [ ] Control definitions
+  - [x] Control definitions
     - [x] create a pop out to select negative controls
     - [x] construct plate assay replica
     - [x] implement option for 96-well plate (optional)
-    - [ ] Add functionality for persistent well selection state
+    - [x] Add functionality for persistent well selection state
+    - [ ] TODO: fix styling
   - [x] Additional meta information to ignore
   - [x] Well name column
     - [ ] Implement drop down option
