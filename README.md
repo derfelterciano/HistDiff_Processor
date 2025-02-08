@@ -41,3 +41,10 @@ at your computer any where!
       - Use the following: [carbon components](https://svelte.carbondesignsystem.com/)
 - [ ] Implement Rust to Svelte API
   - [ ] Rewrite HistDiff input to "mimick" histdiff binary
+    - RUST SIDE IMPLEMENTATION
+      - [ ] Implement formatter to make data acceptable
+      - [ ] Output formatted data to a temp file
+        - (Alternatively, try and hold data into memory and pass it into HD?)
+          This doesn't seem like a good idea but this the only way i can think of to not
+          produce a temp file
+      - [ ] Modify rust HD to accept temp file OR modify HD to take in raw DataStruct

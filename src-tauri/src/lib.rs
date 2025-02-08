@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+mod hd_interface;
 mod tauri_components;
 
 use tauri_components::open_control_selector_win;
