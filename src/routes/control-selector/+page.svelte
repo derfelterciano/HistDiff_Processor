@@ -16,14 +16,21 @@
 	);
 
 	const id: number = $derived(Number(page.url.searchParams.get("id") || 0));
-	const initialDataRaw = $derived(
-		page.url.searchParams.get("initialWells") || "{}",
-	);
+	const initialDataRaw = $derived(() => {
+		const param = page.url.searchParams.get("initialWells") || "{}";
+		try {
+			return decodeURIComponent(param);
+		} catch (e) {
+			console.log("failed to parse init: ", e);
+			return "{}";
+		}
+	});
 
 	function parsejson(): { wells: string[] } {
 		let parsed = { wells: [] };
 		try {
-			parsed = JSON.parse(initialDataRaw);
+			console.log(initialDataRaw);
+			parsed = JSON.parse(initialDataRaw());
 		} catch (err) {
 			console.error("Failed to parse initial data", err);
 		}
