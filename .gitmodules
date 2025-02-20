@@ -1,1 +1,4 @@
 
+[submodule "src-tauri/histdiff_core"]
+	path = src-tauri/histdiff_core
+	url = git@github.com:LokeyLab/histdiff_core.git
