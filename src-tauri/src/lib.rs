@@ -2,8 +2,8 @@
 mod hd_interface;
 mod tauri_components;
 
+use histdiff_core::*;
 use tauri_components::open_control_selector_win;
-use HistDiff_standalone::*;
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
