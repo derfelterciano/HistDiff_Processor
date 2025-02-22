@@ -1,6 +1,9 @@
-use histdiff_core::UserConfig;
-use std::collections::HashMap;
+use serde::{Deserialize, Serialize};
 
+mod config;
+pub use config::process_hd;
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SvelteConfig {
     pub dataset_path: String,
     pub plate_format: u32,
@@ -10,6 +13,7 @@ pub struct SvelteConfig {
     pub add_controls: Option<Vec<ControlSelection>>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ControlSelection {
     pub name: String,
     pub wells: Vec<String>,

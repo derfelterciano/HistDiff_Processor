@@ -2,6 +2,7 @@
 mod hd_interface;
 mod tauri_components;
 
+use hd_interface::process_hd;
 use histdiff_core::*;
 use tauri_components::open_control_selector_win;
 
@@ -17,7 +18,11 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, open_control_selector_win])
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            open_control_selector_win,
+            process_hd
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
