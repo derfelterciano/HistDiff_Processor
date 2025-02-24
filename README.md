@@ -44,8 +44,8 @@ at your computer any where!
     - RUST SIDE IMPLEMENTATION
       - [x] Implement formatter to make data acceptable
       - **Alogrithm was re-written to histdiff_core. The input is raw cell data, processing is done on the fly**
-      - --[ ] Output formatted data to a temp file--
-        - --(Alternatively, try and hold data into memory and pass it into HD?)
+      - ~~[ ] Output formatted data to a temp file~~
+        - ~~(Alternatively, try and hold data into memory and pass it into HD?)
           This doesn't seem like a good idea but this the only way i can think of to not
-          produce a temp file--
-      - --[ ] Modify rust HD to accept temp file OR modify HD to take in raw DataStruct--
+          produce a temp file~~
+      - ~~[ ] Modify rust HD to accept temp file OR modify HD to take in raw DataStruct~~
