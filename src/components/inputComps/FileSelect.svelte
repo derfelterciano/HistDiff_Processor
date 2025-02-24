@@ -59,7 +59,9 @@
 </script>
 
 <div class="file-select">
-	<button dir="ltr" id="file-select" on:click={selectFile}>{label}</button>
+	<button dir="ltr" id="file-select" on:click={selectFile} type="button"
+		>{label}</button
+	>
 	<span id="file-text">{truncatePath(disp_text, 30)}</span>
 </div>
 

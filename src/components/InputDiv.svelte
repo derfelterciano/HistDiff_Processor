@@ -5,6 +5,11 @@
 	import ControlSelector from "./inputComps/ControlSelector.svelte";
 	import { type ControlDefinition } from "../types/controlType";
 	import MultiControls from "./inputComps/MultiControls.svelte";
+	import type {
+		SvelteConfig,
+		ControlSelection,
+	} from "../types/configInterface";
+	import { invoke } from "@tauri-apps/api/core";
 
 	let file_path: string = "";
 	let well_col: string = "";
@@ -15,25 +20,36 @@
 	let negativeControls: ControlDefinition | null = null;
 
 	let controls: ControlDefinition[] = [];
-	/**
-	 * function for updating control hash map
-	 */
-	// function controlSelectComplete(event) {
-	// 	const { controlID, wells, title } = event.detail;
-	// 	controls.set(controlID, { id: controlID, wells, title });
-	// 	console.log(
-	// 		"Parent stored data for controlID:",
-	// 		controlID,
-	// 		wells,
-	// 		title,
-	// 	);
-	// }
 
 	const handleSubmit = (): void => {
-		console.log("file: ", file_path, "well: ", well_col, headers);
-		console.log("meta: ", additionalMeta);
-		console.log(`n-controls: ${JSON.stringify(negativeControls)}`);
-		console.log(`other controls: ${JSON.stringify(controls)}`);
+		let formattedNegativeCntrls: ControlSelection = {
+			wells: negativeControls ? negativeControls.wells : [],
+			name: "REFERENCE",
+		};
+
+		let additional_contrls: ControlSelection[] = [];
+		controls.forEach((cntrl) => {
+			additional_contrls.push({
+				wells: cntrl ? cntrl.wells : [],
+				name: cntrl.title ? cntrl.title : "",
+			});
+		});
+
+		let userConfig: SvelteConfig = {
+			dataset_path: file_path,
+			plate_format: plateFormat,
+			well_name: well_col,
+			add_meta_cols: additionalMeta.length === 0 ? null : additionalMeta,
+			negative_control: formattedNegativeCntrls,
+			add_controls: additional_contrls,
+		};
+
+		invoke("process_hd", { config: userConfig });
+
+		// console.log("file: ", file_path, "well: ", well_col, headers);
+		// console.log("meta: ", additionalMeta);
+		// console.log(`n-controls: ${JSON.stringify(negativeControls)}`);
+		// console.log(`other controls: ${JSON.stringify(controls)}`);
 	};
 </script>
 
