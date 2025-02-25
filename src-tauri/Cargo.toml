@@ -27,3 +27,4 @@ histdiff_core = { path = "./histdiff_core"}
 tauri-plugin-fs = "2"
 rayon = "*"
 num_cpus = "*"
+env_logger = "*"
