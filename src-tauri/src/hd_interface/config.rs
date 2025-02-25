@@ -1,4 +1,5 @@
 use histdiff_core::{calculate_scores, UserConfig};
+use rayon::{max_num_threads, ThreadPoolBuilder};
 use serde_json::Value;
 
 use super::SvelteConfig;
@@ -6,9 +7,20 @@ use super::SvelteConfig;
 #[tauri::command]
 pub fn process_hd(config: SvelteConfig) {
     let hd_config = svelte_to_hd_config(config);
+    println!("Max threads: {:?}", num_cpus::get());
+    std::thread::spawn(move || {
+        let pool = ThreadPoolBuilder::new()
+            .num_threads(num_cpus::get() - 2)
+            .build()
+            .unwrap();
 
-    let hd_res = calculate_scores(&hd_config).expect("HistDiff could not be calculated");
-    println!("{:?}", hd_res);
+        pool.install(|| {
+            let hd_res = calculate_scores(&hd_config).expect("HistDiff could not be calculated");
+            println!("{:?}", hd_res.dataframe_scores);
+        });
+    });
+    // let hd_res = calculate_scores(&hd_config).expect("HistDiff could not be calculated");
+    // println!("{:?}", hd_res.dataframe_scores);
 }
 
 fn svelte_to_hd_config(config: SvelteConfig) -> UserConfig {

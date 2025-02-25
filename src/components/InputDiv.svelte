@@ -20,8 +20,32 @@
 	let negativeControls: ControlDefinition | null = null;
 
 	let controls: ControlDefinition[] = [];
+	let errorMessage: string = "";
+
+	const checkInput = () => {
+		errorMessage = "";
+
+		if (!file_path) {
+			errorMessage = "A path to the cell data is required!";
+			return false;
+		}
+
+		if (!well_col) {
+			errorMessage = "Well column must be specified.";
+			return false;
+		}
+
+		if (negativeControls === null) {
+			errorMessage = "You must specify your negative controls.";
+			return false;
+		}
+
+		return true;
+	};
 
 	const handleSubmit = (): void => {
+		if (!checkInput()) return;
+
 		let formattedNegativeCntrls: ControlSelection = {
 			wells: negativeControls ? negativeControls.wells : [],
 			name: "REFERENCE",
@@ -111,6 +135,10 @@
 		class="justify-center mt-4 border-2 rounded-lg px-4 py-1 text-center bg-green-500 hover:bg-green-300"
 		>Submit</button
 	>
+
+	{#if errorMessage !== ""}
+		<span class="mt-5 text-md text-red-400">{errorMessage}</span>
+	{/if}
 </form>
 
 <style>
