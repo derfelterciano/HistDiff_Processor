@@ -39,8 +39,9 @@ at your computer any where!
   - [x] Well name column
     - [ ] Implement drop down option
       - Use the following: [carbon components](https://svelte.carbondesignsystem.com/)
-- [ ] Implement Rust to Svelte API
-  - [ ] Rewrite HistDiff input to "mimick" histdiff binary
+  - [ ] Implement console in order to show user algorithm progress
+- [x] Implement Rust to Svelte API
+  - [x] Rewrite HistDiff input to "mimick" histdiff binary
     - RUST SIDE IMPLEMENTATION
       - [x] Implement formatter to make data acceptable
       - **Alogrithm was re-written to histdiff_core. The input is raw cell data, processing is done on the fly**
