@@ -17,10 +17,25 @@
 	});
 </script>
 
-<h1>Logs</h1>
+<div class="log-window p-2 h-screen">
+	<h1 class="font-bold text-center text-xl my-2">Logs</h1>
 
-<div class="logs">
-	{#each logs as line}
-		<span>{line}</span>
-	{/each}
+	<div class="logs rounded-md">
+		{#each logs as line}
+			<span class="m-2">{line}</span>
+		{/each}
+	</div>
 </div>
+
+<style>
+	@reference tailwindcss;
+
+	.log-window {
+		@apply flex flex-col items-center;
+	}
+
+	.logs {
+		@apply flex flex-col border-2 w-full h-full;
+		overflow-y: auto;
+	}
+</style>

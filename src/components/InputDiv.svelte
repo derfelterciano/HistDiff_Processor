@@ -10,6 +10,7 @@
 		ControlSelection,
 	} from "../types/configInterface";
 	import { invoke } from "@tauri-apps/api/core";
+	import { listen } from "@tauri-apps/api/event";
 
 	let file_path: string = "";
 	let well_col: string = "";
