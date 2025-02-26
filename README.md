@@ -57,4 +57,5 @@ at your computer any where!
 
 ## Major Bugs:
 
-- [ ] HistDiff panicks at only 1 cntrl well selected.
+- [x] HistDiff panicks at only 1 cntrl well selected.
+  - **_ISSUE:_** modify UI to format the control and well names to remove any leading zeroes.
