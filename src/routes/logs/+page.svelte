@@ -5,6 +5,15 @@
 	let logs: string[] = [];
 	let unlisten: (() => void) | undefined;
 
+	let logElement: HTMLDivElement;
+	$: if (logs.length > 0) {
+		scrollBottom(logElement);
+	}
+
+	const scrollBottom = async (node: HTMLDivElement) => {
+		node.scroll({ top: node.scrollHeight, behavior: "smooth" });
+	};
+
 	onMount(async () => {
 		unlisten = await listen("rust-log", (e) => {
 			logs = [...logs, e.payload as string];
@@ -20,7 +29,7 @@
 <div class="log-window p-2 h-screen">
 	<h1 class="font-bold text-center text-xl my-2">Logs</h1>
 
-	<div class="logs rounded-md">
+	<div bind:this={logElement} class="logs rounded-md">
 		{#each logs as line}
 			<span class="m-2">{line}</span>
 		{/each}
