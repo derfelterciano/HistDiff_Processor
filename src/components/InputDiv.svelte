@@ -43,7 +43,7 @@
 		return true;
 	};
 
-	const handleSubmit = (): void => {
+	const handleSubmit = async (): Promise<void> => {
 		if (!checkInput()) return;
 
 		let formattedNegativeCntrls: ControlSelection = {
@@ -68,7 +68,11 @@
 			add_controls: additional_contrls,
 		};
 
-		invoke("process_hd", { config: userConfig });
+		await invoke("open_logging_window"); // TODO: polish behavior
+
+		setTimeout(async () => {
+			await invoke("process_hd", { config: userConfig });
+		}, 500);
 
 		// console.log("file: ", file_path, "well: ", well_col, headers);
 		// console.log("meta: ", additionalMeta);

@@ -29,3 +29,17 @@ pub async fn open_control_selector_win(
         .build();
     }
 }
+
+#[tauri::command]
+pub async fn open_logging_window(app: tauri::AppHandle) {
+    let label = format!("Logs");
+
+    // check if window is open
+    if app.get_webview_window(&label).is_none() {
+        _ = WebviewWindowBuilder::new(&app, label, WebviewUrl::App(format!("/logs").into()))
+            .title("HistDiff Logs")
+            .resizable(false)
+            .inner_size(800.0, 600.0)
+            .build();
+    }
+}

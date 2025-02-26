@@ -4,13 +4,16 @@
 	"description": "Capability for the main window",
 	"windows": [
 		"main",
-		"control-selector-*"
+		"control-selector-*",
+		"Logs"
 	],
 	"permissions": [
 		"core:default",
 		"opener:default",
 		"dialog:default",
 		"fs:default",
-		"core:window:allow-close"
+		"core:window:allow-close",
+		"core:event:allow-listen",
+		"core:event:allow-emit"
 	]
 }
