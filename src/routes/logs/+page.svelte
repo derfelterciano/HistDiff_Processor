@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { listen } from "@tauri-apps/api/event";
 	import { onMount, onDestroy, tick } from "svelte";
+	import { logStore } from "../../logs/logStorage";
 
 	let logs: string[] = [];
 	let unlisten: (() => void) | undefined;
+	let unsub: () => void;
 
 	let logElement: HTMLDivElement;
 
@@ -17,13 +19,19 @@
 
 	onMount(async () => {
 		unlisten = await listen("rust-log", (e) => {
-			logs = [...logs, e.payload as string];
+			// logs = [...logs, e.payload as string];
+			logStore.update((arr) => [...arr, e.payload as string]);
 			console.log("Heard log!");
+		});
+
+		unsub = logStore.subscribe((updatedLogs) => {
+			logs = updatedLogs;
 		});
 	});
 
 	onDestroy(() => {
 		if (unlisten) unlisten();
+		unsub?.();
 	});
 </script>
 
