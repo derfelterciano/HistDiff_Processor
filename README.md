@@ -54,6 +54,7 @@ at your computer any where!
   - [x] Implement logging in rust processes
   - [x] Add global emit and listening for logging
   - [ ] Prevent main UI interaction when process is running
+  - [ ] Implement persistent logging
 
 ## Major Bugs:
 
