@@ -2,11 +2,12 @@ use histdiff_core::{calculate_scores, UserConfig};
 use log;
 use rayon::{max_num_threads, ThreadPoolBuilder};
 use serde_json::Value;
+use tauri::Emitter;
 
 use super::SvelteConfig;
 
 #[tauri::command]
-pub fn process_hd(config: SvelteConfig) {
+pub fn process_hd(app: tauri::AppHandle, config: SvelteConfig) {
     let hd_config = svelte_to_hd_config(config);
     // println!("Max threads: {:?}", num_cpus::get());
 
@@ -23,7 +24,10 @@ pub fn process_hd(config: SvelteConfig) {
             let hd_res = calculate_scores(&hd_config).expect("HistDiff could not be calculated");
             log::info!("{:?}", hd_res.dataframe_scores);
         });
+
+        _ = app.emit("hd-completed", ());
     });
+
     // let hd_res = calculate_scores(&hd_config).expect("HistDiff could not be calculated");
     // println!("{:?}", hd_res.dataframe_scores);
 }

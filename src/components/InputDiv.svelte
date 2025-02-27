@@ -10,18 +10,19 @@
 		ControlSelection,
 	} from "../types/configInterface";
 	import { invoke } from "@tauri-apps/api/core";
+	import { onMount, onDestroy } from "svelte";
 	import { listen } from "@tauri-apps/api/event";
 
-	let file_path: string = "";
-	let well_col: string = "";
-	let headers: string[] = [];
-	let additionalMeta: string[] = [];
-	let plateFormat: number = 384;
+	let file_path: string = $state("");
+	let well_col: string = $state("");
+	let headers: string[] = $state([]);
+	let additionalMeta: string[] = $state([]);
+	let plateFormat: number = $state(384);
 
-	let negativeControls: ControlDefinition | null = null;
+	let negativeControls: ControlDefinition | null = $state(null);
 
-	let controls: ControlDefinition[] = [];
-	let errorMessage: string = "";
+	let controls: ControlDefinition[] = $state([]);
+	let errorMessage: string = $state("");
 
 	const checkInput = () => {
 		errorMessage = "";
@@ -44,8 +45,26 @@
 		return true;
 	};
 
+	let isProcessing = $state(false);
+	let unlisten: () => void;
+	onMount(async () => {
+		unlisten = await listen("hd-completed", () => {
+			console.log("hd-compleeted!");
+			isProcessing = false;
+		});
+	});
+
+	onDestroy(() => {
+		if (unlisten) unlisten();
+	});
+
+	const openLogs = async (): Promise<void> => {
+		await invoke("open_logging_window");
+	};
+
 	const handleSubmit = async (): Promise<void> => {
 		if (!checkInput()) return;
+		isProcessing = true;
 
 		let formattedNegativeCntrls: ControlSelection = {
 			wells: negativeControls ? negativeControls.wells : [],
@@ -82,7 +101,7 @@
 	};
 </script>
 
-<form class="UserInput" on:submit={handleSubmit}>
+<form class="UserInput" onsubmit={handleSubmit}>
 	<h3
 		class="justify-center text-center font-bold mt-2 mb-4 border-b-2 w-full"
 	>
@@ -138,8 +157,17 @@
 	<button
 		type="submit"
 		class="justify-center mt-4 border-2 rounded-lg px-4 py-1 text-center bg-green-500 hover:bg-green-300"
-		>Submit</button
+		disabled={isProcessing}
+		>{isProcessing ? "Processing..." : "Submit"}</button
 	>
+
+	{#if isProcessing}
+		<button
+			type="button"
+			class="justify-center mt-2 border-2 rounded-sm text-sm bg-fuchsia-800 p-1 text-center"
+			onclick={openLogs}>Open Logs</button
+		>
+	{/if}
 
 	{#if errorMessage !== ""}
 		<span class="mt-5 text-md text-red-400">{errorMessage}</span>

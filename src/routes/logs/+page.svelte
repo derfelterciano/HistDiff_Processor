@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { listen } from "@tauri-apps/api/event";
-	import { onMount, onDestroy } from "svelte";
+	import { onMount, onDestroy, tick } from "svelte";
 
 	let logs: string[] = [];
 	let unlisten: (() => void) | undefined;
 
 	let logElement: HTMLDivElement;
+
 	$: if (logs.length > 0) {
 		scrollBottom(logElement);
 	}
@@ -26,7 +27,7 @@
 	});
 </script>
 
-<div class="log-window p-2 h-screen">
+<div class="log-window p-2">
 	<h1 class="font-bold text-center text-xl my-2">Logs</h1>
 
 	<div bind:this={logElement} class="logs rounded-md">
@@ -37,10 +38,10 @@
 </div>
 
 <style>
-	@reference tailwindcss;
+	@reference 'tailwindcss';
 
 	.log-window {
-		@apply flex flex-col items-center;
+		@apply flex flex-col items-center h-screen;
 	}
 
 	.logs {
