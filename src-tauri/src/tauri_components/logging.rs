@@ -15,7 +15,7 @@ impl Logger {
 
 impl log::Log for Logger {
     fn enabled(&self, metadata: &log::Metadata) -> bool {
-        metadata.level() <= Level::Trace
+        metadata.level() <= Level::Info
     }
 
     fn log(&self, record: &log::Record) {
@@ -24,6 +24,7 @@ impl log::Log for Logger {
 
             // emit logs
             _ = self.app_handle.emit("rust-log", &line);
+            // safe_emit(&self.app_handle, "rust-log", &line);
             println!("{}", &line);
         }
     }
@@ -36,4 +37,15 @@ pub fn init_logger(app: AppHandle) -> Result<(), SetLoggerError> {
     set_boxed_logger(Box::new(logger))?;
     set_max_level(LevelFilter::Trace);
     return Ok(());
+}
+
+#[tauri::command]
+pub fn test_log() {
+    log::info!("TESTING TESTING 123!");
+}
+
+fn safe_emit(app: &AppHandle, event: &str, payload: &str) {
+    if let Some(win) = app.get_webview_window("Logs") {
+        _ = win.emit(event, payload);
+    }
 }

@@ -12,6 +12,9 @@
 	import { invoke } from "@tauri-apps/api/core";
 	import { onMount, onDestroy } from "svelte";
 	import { listen } from "@tauri-apps/api/event";
+	import { initLoggerListener, removeLogger } from "../logs/logInit.svelte";
+	import { logStore } from "../logs/logStorage.svelte";
+	import { get } from "svelte/store";
 
 	let file_path: string = $state("");
 	let well_col: string = $state("");
@@ -48,6 +51,9 @@
 	let isProcessing = $state(false);
 	let unlisten: () => void;
 	onMount(async () => {
+		// start logger
+		// initLoggerListener();
+
 		unlisten = await listen("hd-completed", () => {
 			console.log("hd-compleeted!");
 			isProcessing = false;
@@ -55,6 +61,9 @@
 	});
 
 	onDestroy(() => {
+		// remove logger
+		// removeLogger();
+
 		if (unlisten) unlisten();
 	});
 
@@ -87,12 +96,11 @@
 			negative_control: formattedNegativeCntrls,
 			add_controls: additional_contrls,
 		};
-
-		await invoke("open_logging_window"); // TODO: polish behavior
+		await invoke("process_hd", { config: userConfig });
 
 		setTimeout(async () => {
-			await invoke("process_hd", { config: userConfig });
-		}, 500);
+			await invoke("open_logging_window");
+		}, 1000); // TODO: polish behavior
 
 		// console.log("file: ", file_path, "well: ", well_col, headers);
 		// console.log("meta: ", additionalMeta);

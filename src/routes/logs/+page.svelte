@@ -1,32 +1,37 @@
 <script lang="ts">
 	import { listen } from "@tauri-apps/api/event";
 	import { onMount, onDestroy, tick } from "svelte";
-	import { logStore } from "../../logs/logStorage";
+	import { get } from "svelte/store";
+	import { logStore } from "../../logs/logStorage.svelte";
+	import { invoke } from "@tauri-apps/api/core";
 
-	let logs: string[] = [];
+	let logs: string[] = $state([]);
+
+	setTimeout(() => {
+		logs = get(logStore);
+		console.log(get(logStore));
+	}, 1000);
 	let unlisten: (() => void) | undefined;
 	let unsub: () => void;
 
 	let logElement: HTMLDivElement;
 
-	$: if (logs.length > 0) {
-		scrollBottom(logElement);
-	}
+	// $: if (logs.length > 0) {
+	// 	scrollBottom(logElement);
+	// }
 
 	const scrollBottom = async (node: HTMLDivElement) => {
 		node.scroll({ top: node.scrollHeight, behavior: "smooth" });
 	};
 
 	onMount(async () => {
-		unlisten = await listen("rust-log", (e) => {
-			// logs = [...logs, e.payload as string];
-			logStore.update((arr) => [...arr, e.payload as string]);
-			console.log("Heard log!");
-		});
-
-		unsub = logStore.subscribe((updatedLogs) => {
-			logs = updatedLogs;
-		});
+		console.log("mounted");
+		invoke("test_log");
+		setTimeout(() => {
+			unsub = logStore.subscribe((updatedLogs) => {
+				logs = updatedLogs;
+			});
+		}, 1000);
 	});
 
 	onDestroy(() => {
