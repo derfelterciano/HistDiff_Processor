@@ -12,9 +12,6 @@
 	import { invoke } from "@tauri-apps/api/core";
 	import { onMount, onDestroy } from "svelte";
 	import { listen } from "@tauri-apps/api/event";
-	import { initLoggerListener, removeLogger } from "../logs/logInit.svelte";
-	import { logStore } from "../logs/logStorage.svelte";
-	import { get } from "svelte/store";
 
 	let file_path: string = $state("");
 	let well_col: string = $state("");

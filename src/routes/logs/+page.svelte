@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { listen } from "@tauri-apps/api/event";
 	import { onMount, onDestroy, tick } from "svelte";
-	import { get } from "svelte/store";
 	import { invoke } from "@tauri-apps/api/core";
 
 	let logs: string[] = $state([]);
