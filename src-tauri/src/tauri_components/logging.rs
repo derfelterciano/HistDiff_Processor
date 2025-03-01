@@ -58,6 +58,12 @@ pub fn get_logs() -> Vec<String> {
 }
 
 #[tauri::command]
+pub fn clear_logs() {
+    let mut logs = LOGS.lock().unwrap();
+    logs.clear();
+}
+
+#[tauri::command]
 pub fn test_log() {
     log::info!("TESTING TESTING 123!");
 }

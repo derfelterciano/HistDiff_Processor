@@ -49,7 +49,8 @@
 	let unlisten: () => void;
 	onMount(async () => {
 		unlisten = await listen("hd-completed", () => {
-			console.log("hd-compleeted!");
+			console.log("hd-completed!");
+			invoke("clear_logs");
 			isProcessing = false;
 		});
 	});
