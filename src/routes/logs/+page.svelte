@@ -2,17 +2,11 @@
 	import { listen } from "@tauri-apps/api/event";
 	import { onMount, onDestroy, tick } from "svelte";
 	import { get } from "svelte/store";
-	import { logStore } from "../../logs/logStorage.svelte";
 	import { invoke } from "@tauri-apps/api/core";
 
 	let logs: string[] = $state([]);
 
-	setTimeout(() => {
-		logs = get(logStore);
-		console.log(get(logStore));
-	}, 1000);
 	let unlisten: (() => void) | undefined;
-	let unsub: () => void;
 
 	let logElement: HTMLDivElement;
 
@@ -25,18 +19,17 @@
 	};
 
 	onMount(async () => {
-		console.log("mounted");
-		invoke("test_log");
-		setTimeout(() => {
-			unsub = logStore.subscribe((updatedLogs) => {
-				logs = updatedLogs;
-			});
-		}, 1000);
+		// invoke("test_log");
+		const storedLogs: string[] = await invoke("get_logs");
+		logs.push(...storedLogs);
+
+		unlisten = await listen("rust-log", (e) => {
+			logs = [...logs, e.payload as string];
+		});
 	});
 
 	onDestroy(() => {
 		if (unlisten) unlisten();
-		unsub?.();
 	});
 </script>
 

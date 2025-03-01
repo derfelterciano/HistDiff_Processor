@@ -1910,6 +1910,7 @@ version = "0.1.0"
 dependencies = [
  "env_logger",
  "histdiff_core",
+ "lazy_static",
  "log",
  "num_cpus",
  "rayon",

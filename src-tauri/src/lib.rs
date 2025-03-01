@@ -4,7 +4,9 @@ mod tauri_components;
 
 use hd_interface::process_hd;
 use histdiff_core::*;
-use tauri_components::{init_logger, open_control_selector_win, open_logging_window, test_log};
+use tauri_components::{
+    get_logs, init_logger, open_control_selector_win, open_logging_window, test_log,
+};
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
@@ -27,7 +29,8 @@ pub fn run() {
             open_control_selector_win,
             process_hd,
             open_logging_window,
-            test_log
+            test_log,
+            get_logs
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

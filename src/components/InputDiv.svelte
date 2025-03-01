@@ -51,9 +51,6 @@
 	let isProcessing = $state(false);
 	let unlisten: () => void;
 	onMount(async () => {
-		// start logger
-		// initLoggerListener();
-
 		unlisten = await listen("hd-completed", () => {
 			console.log("hd-compleeted!");
 			isProcessing = false;
@@ -61,9 +58,6 @@
 	});
 
 	onDestroy(() => {
-		// remove logger
-		// removeLogger();
-
 		if (unlisten) unlisten();
 	});
 
@@ -97,10 +91,7 @@
 			add_controls: additional_contrls,
 		};
 		await invoke("process_hd", { config: userConfig });
-
-		setTimeout(async () => {
-			await invoke("open_logging_window");
-		}, 1000); // TODO: polish behavior
+		await invoke("open_logging_window"); // TODO: polish behavior
 
 		// console.log("file: ", file_path, "well: ", well_col, headers);
 		// console.log("meta: ", additionalMeta);
