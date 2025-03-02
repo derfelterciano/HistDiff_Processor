@@ -2,10 +2,12 @@
 	import { listen } from "@tauri-apps/api/event";
 	import { onMount, onDestroy, tick } from "svelte";
 	import { invoke } from "@tauri-apps/api/core";
+	import { getCurrentWindow } from "@tauri-apps/api/window";
 
 	let logs: string[] = $state([]);
 
 	let unlisten: (() => void) | undefined;
+	let finishHD: (() => void) | undefined;
 
 	let logElement: HTMLDivElement;
 
@@ -25,10 +27,15 @@
 		unlisten = await listen("rust-log", (e) => {
 			logs = [...logs, e.payload as string];
 		});
+
+		finishHD = await listen("hd-completed", () => {
+			getCurrentWindow().close();
+		});
 	});
 
 	onDestroy(() => {
 		if (unlisten) unlisten();
+		if (finishHD) finishHD();
 	});
 </script>
 

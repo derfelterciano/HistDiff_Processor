@@ -55,7 +55,7 @@ at your computer any where!
   - [x] Add global emit and listening for logging
   - [x] Prevent main UI interaction when process is running
   - [x] Implement persistent logging
-  - [ ] Modify rust hd core to use infos instead of traces
+  - [x] Modify rust hd core to use infos instead of traces
 
 ## Major Bugs:
 
