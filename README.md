@@ -55,10 +55,11 @@ at your computer any where!
   - [x] Prevent main UI interaction when process is running
   - [x] Implement persistent logging
   - [x] Modify rust hd core to use infos instead of traces
-- [ ] Implement User Output functionality
-  - [ ] Store the histdiff output globally in the rust backend or use a different approach
-  - [ ] Implement UI for user to output HistDiff data .
-    - [ ] Call a file dialogue for users to choose where to output data
+- [x] Implement User Output functionality
+  - [x] Store the histdiff output globally in the rust backend or use a different approach
+  - [x] Implement UI for user to output HistDiff data .
+    - [x] Call a file dialogue for users to choose where to output data
+- [ ] Implement visualization and visual analysis
 
 ## Major Bugs:
 
