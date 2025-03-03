@@ -1,6 +1,6 @@
-use histdiff_core::{calculate_scores, UserConfig};
+use histdiff_core::{calculate_scores, HistDiffRes, UserConfig};
 use log;
-use rayon::{max_num_threads, ThreadPoolBuilder};
+use rayon::ThreadPoolBuilder;
 use serde_json::Value;
 use tauri::Emitter;
 
@@ -14,6 +14,7 @@ pub fn process_hd(app: tauri::AppHandle, config: SvelteConfig) {
     log::info!("Max threads: {:?}", num_cpus::get());
     log::info!("Begin HistDiff...");
 
+    let mut hd_res: Option<HistDiffRes> = None;
     std::thread::spawn(move || {
         let pool = ThreadPoolBuilder::new()
             .num_threads(num_cpus::get() - 2)
@@ -21,10 +22,10 @@ pub fn process_hd(app: tauri::AppHandle, config: SvelteConfig) {
             .unwrap();
 
         pool.install(|| {
-            let hd_res = calculate_scores(&hd_config).expect("HistDiff could not be calculated");
-            log::info!("{:?}", hd_res.dataframe_scores);
+            hd_res = Some(calculate_scores(&hd_config).expect("HistDiff could not be calculated"));
         });
 
+        log::info!("{:?}", hd_res.unwrap().dataframe_scores); // TODO: send this to a global struct
         _ = app.emit("hd-completed", ());
     });
 

@@ -39,7 +39,7 @@ pub async fn open_logging_window(app: tauri::AppHandle) {
         _ = WebviewWindowBuilder::new(&app, label, WebviewUrl::App(format!("/logs").into()))
             .title("HistDiff Logs")
             .resizable(false)
-            .inner_size(320.0, 569.0)
+            .inner_size(500.0, 300.0)
             .build();
     }
 }

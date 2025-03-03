@@ -39,7 +39,6 @@ at your computer any where!
   - [x] Well name column
     - [ ] Implement drop down option
       - Use the following: [carbon components](https://svelte.carbondesignsystem.com/)
-  - [ ] Implement console in order to show user algorithm progress
 - [x] Implement Rust to Svelte API
   - [x] Rewrite HistDiff input to "mimick" histdiff binary
     - RUST SIDE IMPLEMENTATION
@@ -56,8 +55,13 @@ at your computer any where!
   - [x] Prevent main UI interaction when process is running
   - [x] Implement persistent logging
   - [x] Modify rust hd core to use infos instead of traces
+- [ ] Implement User Output functionality
+  - [ ] Store the histdiff output globally in the rust backend or use a different approach
+  - [ ] Implement UI for user to output HistDiff data .
+    - [ ] Call a file dialogue for users to choose where to output data
 
 ## Major Bugs:
 
 - [x] HistDiff panicks at only 1 cntrl well selected.
   - **_ISSUE:_** modify UI to format the control and well names to remove any leading zeroes.
+  - [ ] Format well control input so histdiff doesn't panic.

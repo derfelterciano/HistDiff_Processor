@@ -15,6 +15,12 @@
 	// 	scrollBottom(logElement);
 	// }
 
+	$effect(() => {
+		if (logs.length > 0) {
+			scrollBottom(logElement);
+		}
+	});
+
 	const scrollBottom = async (node: HTMLDivElement) => {
 		node.scroll({ top: node.scrollHeight, behavior: "smooth" });
 	};
