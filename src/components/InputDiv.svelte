@@ -52,6 +52,7 @@
 			console.log("hd-completed!");
 			invoke("clear_logs");
 			isProcessing = false;
+			invoke("write_res");
 		});
 	});
 

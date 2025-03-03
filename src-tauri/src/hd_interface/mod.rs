@@ -1,7 +1,12 @@
+use std::sync::Mutex;
+
+use histdiff_core::HistDiffRes;
 use serde::{Deserialize, Serialize};
 
 mod config;
-pub use config::process_hd;
+mod states;
+pub use config::*;
+pub use states::*;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SvelteConfig {
@@ -17,4 +22,8 @@ pub struct SvelteConfig {
 pub struct ControlSelection {
     pub name: String,
     pub wells: Vec<String>,
+}
+
+pub struct HistDiffState {
+    pub hd_res: Mutex<Option<HistDiffRes>>,
 }

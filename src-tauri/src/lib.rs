@@ -2,8 +2,10 @@
 mod hd_interface;
 mod tauri_components;
 
-use hd_interface::process_hd;
+use hd_interface::{process_hd, write_res, HistDiffState};
 use histdiff_core::*;
+use std::sync::Arc;
+use tauri::Manager;
 use tauri_components::{
     clear_logs, get_logs, init_logger, open_control_selector_win, open_logging_window, test_log,
 };
@@ -22,6 +24,8 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
             init_logger(app.handle().clone()).expect("Failed to initialize logger");
+
+            app.manage(HistDiffState::new());
             return Ok(());
         })
         .invoke_handler(tauri::generate_handler![
@@ -31,7 +35,8 @@ pub fn run() {
             open_logging_window,
             test_log,
             get_logs,
-            clear_logs
+            clear_logs,
+            write_res
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
