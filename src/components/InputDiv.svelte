@@ -12,6 +12,7 @@
 	import { invoke } from "@tauri-apps/api/core";
 	import { onMount, onDestroy } from "svelte";
 	import { listen } from "@tauri-apps/api/event";
+	import OutputDialogue from "./inputComps/OutputDialogue.svelte";
 
 	let file_path: string = $state("");
 	let well_col: string = $state("");
@@ -46,13 +47,14 @@
 	};
 
 	let isProcessing = $state(false);
+	let saveReady = $state(false);
 	let unlisten: () => void;
 	onMount(async () => {
 		unlisten = await listen("hd-completed", () => {
 			console.log("hd-completed!");
 			invoke("clear_logs");
 			isProcessing = false;
-			invoke("write_res");
+			saveReady = true;
 		});
 	});
 
@@ -65,8 +67,10 @@
 	};
 
 	const handleSubmit = async (): Promise<void> => {
+		invoke("clear_logs");
 		if (!checkInput()) return;
 		isProcessing = true;
+		saveReady = false;
 
 		let formattedNegativeCntrls: ControlSelection = {
 			wells: negativeControls ? negativeControls.wells : [],
@@ -154,10 +158,14 @@
 
 	<button
 		type="submit"
-		class="justify-center mt-4 border-2 rounded-lg px-4 py-1 text-center bg-green-500 hover:bg-green-300"
+		class="justify-center mt-4 border-2 rounded-lg px-4 py-1 text-center bg-green-500 hover:bg-green-600"
 		disabled={isProcessing}
 		>{isProcessing ? "Processing..." : "Submit"}</button
 	>
+
+	{#if saveReady}
+		<OutputDialogue bind:saveReady />
+	{/if}
 
 	{#if isProcessing}
 		<button
