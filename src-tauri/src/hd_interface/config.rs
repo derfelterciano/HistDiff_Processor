@@ -5,7 +5,7 @@ use serde_json::Value;
 use std::sync::Arc;
 use tauri::{Emitter, Manager, State};
 
-use super::{HistDiffState, SvelteConfig};
+use super::{clean_well_names, HistDiffState, SvelteConfig};
 
 #[tauri::command]
 pub fn process_hd(app: tauri::AppHandle, config: SvelteConfig) {
@@ -42,7 +42,7 @@ fn svelte_to_hd_config(config: SvelteConfig) -> UserConfig {
     let id = vec![config.well_name.clone()];
     let useless_meta = config.add_meta_cols.clone();
     let plate = &config.plate_format; // TODO: Convert between the different plates
-    let ref_cntrls = config.negative_control.wells.clone();
+    let ref_cntrls = clean_well_names(&config.negative_control.wells);
 
     return UserConfig::new(path, id, useless_meta, true, None, None, ref_cntrls, None);
 }

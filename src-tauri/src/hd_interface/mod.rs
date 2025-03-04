@@ -5,8 +5,10 @@ use serde::{Deserialize, Serialize};
 
 mod config;
 mod states;
+mod utils;
 pub use config::*;
 pub use states::*;
+use utils::*;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SvelteConfig {

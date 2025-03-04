@@ -65,4 +65,5 @@ at your computer any where!
 
 - [x] HistDiff panicks at only 1 cntrl well selected.
   - **_ISSUE:_** modify UI to format the control and well names to remove any leading zeroes.
-  - [ ] Format well control input so histdiff doesn't panic.
+  - [x] Format well control input so histdiff doesn't panic.
+- [ ] If only one control well is selected then the program zeroes out the row
