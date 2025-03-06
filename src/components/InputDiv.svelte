@@ -94,7 +94,7 @@
 			add_controls: additional_contrls,
 		};
 		await invoke("process_hd", { config: userConfig });
-		await invoke("open_logging_window"); // TODO: polish behavior
+		await invoke("open_logging_window");
 
 		// console.log("file: ", file_path, "well: ", well_col, headers);
 		// console.log("meta: ", additionalMeta);

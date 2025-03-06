@@ -49,7 +49,7 @@ at your computer any where!
           This doesn't seem like a good idea but this the only way i can think of to not
           produce a temp file~~
       - ~~[ ] Modify rust HD to accept temp file OR modify HD to take in raw DataStruct~~
-- [ ] Implement logging
+- [x] Implement logging
   - [x] Implement logging in rust processes
   - [x] Add global emit and listening for logging
   - [x] Prevent main UI interaction when process is running
@@ -66,4 +66,3 @@ at your computer any where!
 - [x] HistDiff panicks at only 1 cntrl well selected.
   - **_ISSUE:_** modify UI to format the control and well names to remove any leading zeroes.
   - [x] Format well control input so histdiff doesn't panic.
-- [ ] If only one control well is selected then the program zeroes out the row

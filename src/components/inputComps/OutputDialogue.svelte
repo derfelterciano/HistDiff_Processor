@@ -16,8 +16,10 @@
 			savePath = fp;
 		}
 
-		await invoke("write_res", { outPath: savePath });
-		// console.log("path: ", fp);
+		if (savePath !== "") {
+			await invoke("write_res", { outPath: savePath });
+			// console.log("path: ", fp);
+		}
 	};
 </script>
 

@@ -10,10 +10,9 @@ use tauri_components::{
     clear_logs, get_logs, init_logger, open_control_selector_win, open_logging_window, test_log,
 };
 
-// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
+fn terminal(msg: &str) {
+    log::warn!("{:?}", msg);
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -29,14 +28,14 @@ pub fn run() {
             return Ok(());
         })
         .invoke_handler(tauri::generate_handler![
-            greet,
             open_control_selector_win,
             process_hd,
             open_logging_window,
             test_log,
             get_logs,
             clear_logs,
-            write_res
+            write_res,
+            terminal
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
