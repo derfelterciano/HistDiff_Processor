@@ -1,5 +1,6 @@
-use std::sync::Mutex;
+use std::{fmt::format, sync::Mutex};
 
+use colored::*;
 use lazy_static::lazy_static;
 use log::{self, set_boxed_logger, set_max_level, Level, LevelFilter, SetLoggerError};
 use tauri::{AppHandle, Emitter, Manager};
@@ -38,7 +39,24 @@ impl log::Log for Logger {
                 _ = self.app_handle.emit("rust-log", &line);
                 // safe_emit(&self.app_handle, "rust-log", &line);}
             }
-            println!("{}", &line);
+
+            let level_clr = match record.level() {
+                Level::Warn => record.level().to_string().yellow().bold(),
+                Level::Info => record.level().to_string().purple().bold(),
+                Level::Trace => record.level().to_string().cyan().bold(),
+                Level::Error => record.level().to_string().red().bold(),
+                Level::Debug => record.level().to_string().blue().bold(),
+            };
+
+            let msg_str = format!(
+                "{:5.5} | [{:25.25}-{:03}] | {}",
+                level_clr,
+                record.file().unwrap_or("<unknown>"),
+                record.line().unwrap_or(0),
+                record.args(),
+            );
+
+            println!("{}", msg_str);
         }
     }
 

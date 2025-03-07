@@ -27,6 +27,6 @@ histdiff_core = { path = "./histdiff_core"}
 tauri-plugin-fs = "*"
 rayon = "*"
 num_cpus = "*"
-env_logger = "*"
 log = "*"
 lazy_static = "*"
+colored = "*"
