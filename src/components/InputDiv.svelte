@@ -67,6 +67,7 @@
 	};
 
 	const handleSubmit = async (): Promise<void> => {
+		invoke("open_analysis");
 		invoke("clear_logs");
 		if (!checkInput()) return;
 		isProcessing = true;

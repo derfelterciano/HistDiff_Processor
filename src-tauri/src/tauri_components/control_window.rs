@@ -43,3 +43,15 @@ pub async fn open_logging_window(app: tauri::AppHandle) {
             .build();
     }
 }
+
+#[tauri::command]
+pub async fn open_analysis(app: tauri::AppHandle) {
+    let label = format!("analysis");
+
+    if app.get_webview_window(&label).is_none() {
+        _ = WebviewWindowBuilder::new(&app, label, WebviewUrl::App(format!("/analysis").into()))
+            .resizable(true)
+            .inner_size(1024.0, 800.0)
+            .build();
+    }
+}

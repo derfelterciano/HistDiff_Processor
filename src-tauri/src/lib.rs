@@ -7,7 +7,8 @@ use histdiff_core::*;
 use std::sync::Arc;
 use tauri::Manager;
 use tauri_components::{
-    clear_logs, get_logs, init_logger, open_control_selector_win, open_logging_window, test_log,
+    clear_logs, get_logs, init_logger, open_analysis, open_control_selector_win,
+    open_logging_window, test_log,
 };
 
 #[tauri::command]
@@ -35,7 +36,8 @@ pub fn run() {
             get_logs,
             clear_logs,
             write_res,
-            terminal
+            terminal,
+            open_analysis
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

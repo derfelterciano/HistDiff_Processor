@@ -60,6 +60,9 @@ at your computer any where!
   - [x] Implement UI for user to output HistDiff data .
     - [x] Call a file dialogue for users to choose where to output data
 - [ ] Implement visualization and visual analysis
+  - [ ] Implement Heatmap view
+  - [ ] Implement Score distribution
+  - [ ] Implement positive control score distribution
 
 ## Major Bugs:
 
