@@ -2,3 +2,7 @@
 [submodule "src-tauri/histdiff_core"]
 	path = src-tauri/histdiff_core
 	url = git@github.com:LokeyLab/histdiff_core.git
+[submodule "src-tauri/cp_hierarchical_clustering"]
+	path = src-tauri/cp_hierarchical_clustering
+	url = git@github.com:LokeyLab/cp_hierarchical_clustering.git
+	branch = main
