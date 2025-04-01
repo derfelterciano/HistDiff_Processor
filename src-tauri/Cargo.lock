@@ -1936,6 +1936,7 @@ dependencies = [
  "lazy_static",
  "log",
  "num_cpus",
+ "polars",
  "rayon",
  "serde",
  "serde_json",

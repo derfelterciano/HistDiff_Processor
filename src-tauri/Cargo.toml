@@ -30,4 +30,5 @@ num_cpus = "*"
 log = "*"
 lazy_static = "*"
 colored = "*"
+polars = "*"
 cp_hierarchical_clustering = { path = "./cp_hierarchical_clustering"}
