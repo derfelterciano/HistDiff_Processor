@@ -61,6 +61,11 @@ at your computer any where!
     - [x] Call a file dialogue for users to choose where to output data
 - [ ] Implement visualization and visual analysis
   - [ ] Implement Heatmap view
+    - Use new clustering library
+    - [ ] Integrate clustering library to app's rust library
+      - [ ] Convert json tree into D3 compliant json tree
+      - [ ] Create ability to safely transpose dataframes so both rows and cols are clustered
+        - [ ] This needs to be an option if users want to see features clustered
   - [ ] Implement Score distribution
   - [ ] Implement positive control score distribution
 

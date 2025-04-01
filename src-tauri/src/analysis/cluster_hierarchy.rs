@@ -9,22 +9,18 @@ use tauri::AppHandle;
 use crate::hd_interface::retrieve_state;
 
 #[tauri::command]
-pub fn cluster_hd(
-    app: AppHandle,
-    mat_metric: Metric,
-    linkage: LinkageMethod,
-) -> Option<ClusterHierarchy> {
+pub fn cluster_hd(app: AppHandle, mat_metric: Metric, linkage: LinkageMethod) -> Option<String> {
     let hd = retrieve_state(&app);
 
     if let Some(res) = hd {
         let data = res.dataframe_scores?;
-        log::info!("{}", data);
 
         let id_col = grab_col_idx_as_str(&data, 0).unwrap();
 
-        let cluster = create_hierarchy_from_df(&data, mat_metric, linkage, &Some(vec![0]));
+        let cluster = create_hierarchy_from_df(&data, mat_metric, linkage, &Some(vec![0])).unwrap();
 
-        return None;
+        log::info!("{:?}", cluster.leaf_ordering());
+        return Some(cluster.to_json_tree());
     } else {
         return None;
     }

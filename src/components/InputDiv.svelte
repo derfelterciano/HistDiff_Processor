@@ -56,7 +56,10 @@
 			isProcessing = false;
 			saveReady = true;
 			invoke("open_analysis");
-			invoke("cluster_hd");
+			invoke("cluster_hd", {
+				matMetric: "Pearson",
+				linkage: "Complete",
+			});
 		});
 	});
 
