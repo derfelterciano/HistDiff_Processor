@@ -1,7 +1,9 @@
 #![allow(unused_imports)]
+mod analysis;
 mod hd_interface;
 mod tauri_components;
 
+use analysis::cluster_hd;
 use hd_interface::{process_hd, write_res, HistDiffState};
 use histdiff_core::*;
 use std::sync::Arc;
@@ -37,7 +39,8 @@ pub fn run() {
             clear_logs,
             write_res,
             terminal,
-            open_analysis
+            open_analysis,
+            cluster_hd
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

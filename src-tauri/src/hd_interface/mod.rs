@@ -8,6 +8,7 @@ mod states;
 mod utils;
 pub use config::*;
 pub use states::*;
+pub use utils::retrieve_state;
 use utils::*;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]

@@ -55,6 +55,8 @@
 			invoke("clear_logs");
 			isProcessing = false;
 			saveReady = true;
+			invoke("open_analysis");
+			invoke("cluster_hd");
 		});
 	});
 
@@ -67,7 +69,6 @@
 	};
 
 	const handleSubmit = async (): Promise<void> => {
-		invoke("open_analysis");
 		invoke("clear_logs");
 		if (!checkInput()) return;
 		isProcessing = true;

@@ -1,3 +1,8 @@
+use histdiff_core::HistDiffRes;
+use tauri::{AppHandle, Manager};
+
+use crate::hd_interface::HistDiffState;
+
 pub fn clean_well_names(wells: &Vec<String>) -> Vec<String> {
     let res: Vec<String> = wells
         .iter()
@@ -17,4 +22,13 @@ pub fn clean_well_names(wells: &Vec<String>) -> Vec<String> {
         .collect();
 
     return res;
+}
+
+pub fn retrieve_state(app: &AppHandle) -> Option<HistDiffRes> {
+    let res = app.state::<HistDiffState>();
+    let guard = res.hd_res.lock().unwrap();
+
+    let hd = guard.clone();
+
+    return hd;
 }
