@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use cp_hierarchical_clustering::{
-    create_hierarchy_from_df, ClusterHierarchy, LinkageMethod, Metric,
+    create_hierarchy_from_df, ClusterHierarchy, DendrogramNode, LinkageMethod, Metric,
 };
 use polars::prelude::*;
 use tauri::AppHandle;
@@ -20,7 +20,7 @@ pub fn cluster_hd(app: AppHandle, mat_metric: Metric, linkage: LinkageMethod) ->
         let cluster = create_hierarchy_from_df(&data, mat_metric, linkage, &Some(vec![0])).unwrap();
 
         log::info!("{:?}", cluster.leaf_ordering());
-        return Some(cluster.to_json_tree());
+        return Some(cluster.to_json_tree().expect("could not retrieve json"));
     } else {
         return None;
     }
