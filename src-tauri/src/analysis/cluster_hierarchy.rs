@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use super::convert_to_d3;
 use cp_hierarchical_clustering::{
     create_hierarchy_from_df, ClusterHierarchy, DendrogramNode, LinkageMethod, Metric,
 };
@@ -19,7 +20,8 @@ pub fn cluster_hd(app: AppHandle, mat_metric: Metric, linkage: LinkageMethod) ->
 
         let cluster = create_hierarchy_from_df(&data, mat_metric, linkage, &Some(vec![0])).unwrap();
 
-        log::info!("{:?}", cluster.leaf_ordering());
+        let d3 = convert_to_d3(&cluster, &id_col);
+        log::info!("{}", d3.to_json());
         return Some(cluster.to_json_tree().expect("could not retrieve json"));
     } else {
         return None;

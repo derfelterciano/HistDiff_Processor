@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use cp_hierarchical_clustering::DendrogramNode;
+use cp_hierarchical_clustering::{ClusterHierarchy, DendrogramNode};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -9,6 +9,21 @@ pub struct D3Node {
     pub name: Option<String>,
     pub dist: f64,
     pub children: Vec<D3Node>,
+}
+
+impl D3Node {
+    pub fn to_json(&self) -> String {
+        serde_json::to_string_pretty(self).expect("Can't convert D3Node into string")
+    }
+}
+
+pub(in crate::analysis) fn convert_to_d3(
+    cluster: &ClusterHierarchy,
+    name_map: &HashMap<usize, String>,
+) -> D3Node {
+    let node: &DendrogramNode = &cluster.get_raw_nodes().unwrap();
+
+    return build_d3_tree(node, name_map);
 }
 
 fn build_d3_tree(root: &DendrogramNode, name_map: &HashMap<usize, String>) -> D3Node {
