@@ -21,8 +21,9 @@ pub fn cluster_hd(app: AppHandle, mat_metric: Metric, linkage: LinkageMethod) ->
         let cluster = create_hierarchy_from_df(&data, mat_metric, linkage, &Some(vec![0])).unwrap();
 
         let d3 = convert_to_d3(&cluster, &id_col);
-        log::info!("{}", d3.to_json());
-        return Some(cluster.to_json_tree().expect("could not retrieve json"));
+        log::warn!("{}", d3.to_json());
+        log::warn!("{:?}", cluster.leaf_ordering());
+        return Some(d3.to_json());
     } else {
         return None;
     }
