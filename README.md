@@ -74,3 +74,6 @@ at your computer any where!
 - [x] HistDiff panicks at only 1 cntrl well selected.
   - **_ISSUE:_** modify UI to format the control and well names to remove any leading zeroes.
   - [x] Format well control input so histdiff doesn't panic.
+- [ ] Address Error handling
+  - **_ISSUE:_** emit a separate error flag to soft reset app state
+  - [ ] Implement error emits

@@ -1,5 +1,5 @@
 use histdiff_core::{calculate_scores, HistDiffRes, UserConfig};
-use log;
+use log::{self, error};
 use rayon::ThreadPoolBuilder;
 use serde_json::Value;
 use std::sync::Arc;
@@ -23,7 +23,16 @@ pub fn process_hd(app: tauri::AppHandle, config: SvelteConfig) {
             .unwrap();
 
         pool.install(|| {
-            hd_res = Some(calculate_scores(&hd_config).expect("HistDiff could not be calculated"));
+            match calculate_scores(&hd_config) {
+                Ok(result) => {
+                    hd_res = Some(result);
+                }
+                Err(e) => {
+                    log::error!("HistDiff failes: {}", e);
+                    hd_res = None;
+                }
+            }
+            // hd_res = Some(calculate_scores(&hd_config).expect("HistDiff could not be calculated"));
         });
 
         if let Some(hd) = hd_res {
