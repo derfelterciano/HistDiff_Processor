@@ -1,6 +1,6 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, error::Error, fs::File, io::Write};
 
-use super::convert_to_d3;
+use super::{convert_to_d3, D3Node};
 use cp_hierarchical_clustering::{
     create_hierarchy_from_df, ClusterHierarchy, DendrogramNode, LinkageMethod, Metric,
 };
@@ -23,6 +23,10 @@ pub fn cluster_hd(app: AppHandle, mat_metric: Metric, linkage: LinkageMethod) ->
         let d3 = convert_to_d3(&cluster, &id_col);
         log::warn!("{}", d3.to_json());
         log::warn!("{:?}", cluster.leaf_ordering());
+
+        // WARN: Remove below utility line
+        // _ = d3.write_json("./tree.json");
+
         return Some(d3.to_json());
     } else {
         return None;

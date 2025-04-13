@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, error::Error, fs::File, io::Write};
 
 use cp_hierarchical_clustering::{ClusterHierarchy, DendrogramNode};
 use serde::{Deserialize, Serialize};
@@ -14,6 +14,14 @@ pub struct D3Node {
 impl D3Node {
     pub fn to_json(&self) -> String {
         serde_json::to_string_pretty(self).expect("Can't convert D3Node into string")
+    }
+
+    pub fn write_json(&self, fp: &str) -> Result<(), Box<dyn Error>> {
+        let j_str = serde_json::to_string_pretty(self).expect("Can't convert to string.");
+        let mut file = File::create(fp)?;
+        _ = file.write_all(j_str.as_bytes());
+
+        return Ok(());
     }
 }
 
