@@ -1,1 +1,5 @@
-<h1>Hello!</h1>
+<script lang="ts">
+	import ClusterMap from "../../components/ClusterMap.svelte";
+</script>
+
+<ClusterMap />

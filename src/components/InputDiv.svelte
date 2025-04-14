@@ -55,7 +55,7 @@
 			invoke("clear_logs");
 			isProcessing = false;
 			saveReady = true;
-			invoke("open_analysis");
+			// invoke("open_analysis");
 			invoke("cluster_hd", {
 				matMetric: "Pearson",
 				linkage: "Complete",
@@ -69,6 +69,10 @@
 
 	const openLogs = async (): Promise<void> => {
 		await invoke("open_logging_window");
+	};
+
+	const openAnalysis = async (): Promise<void> => {
+		await invoke("open_analysis");
 	};
 
 	const handleSubmit = async (): Promise<void> => {
@@ -183,6 +187,12 @@
 	{#if errorMessage !== ""}
 		<span class="mt-5 text-md text-red-400">{errorMessage}</span>
 	{/if}
+
+	<button
+		type="button"
+		class="mt-3 bg-rose-400 hover:bg-rose-300 rounded-sm p-1 border-2"
+		onclick={openAnalysis}>Open Analysis Window</button
+	>
 </form>
 
 <style>

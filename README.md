@@ -63,7 +63,7 @@ at your computer any where!
   - [ ] Implement Heatmap view
     - Use new clustering library
     - [ ] Integrate clustering library to app's rust library
-      - [ ] Convert json tree into D3 compliant json tree
+      - [x] Convert json tree into D3 compliant json tree
       - [ ] Create ability to safely transpose dataframes so both rows and cols are clustered
         - [ ] This needs to be an option if users want to see features clustered
   - [ ] Implement Score distribution
