@@ -5,6 +5,7 @@
 	import type { HierarchyPointNode, HierarchyPointLink } from "d3-hierarchy";
 
 	const tree: string = "/tree.json";
+	const scores: string = "/scores.json";
 
 	let d3_tree: D3Node;
 	let svgDiv: HTMLDivElement;

@@ -4,7 +4,9 @@ use super::{convert_to_d3, D3Node};
 use cp_hierarchical_clustering::{
     create_hierarchy_from_df, ClusterHierarchy, DendrogramNode, LinkageMethod, Metric,
 };
+use histdiff_core::HistDiffRes;
 use polars::prelude::*;
+use serde::Serialize;
 use tauri::AppHandle;
 
 use crate::hd_interface::retrieve_state;
@@ -24,13 +26,29 @@ pub fn cluster_hd(app: AppHandle, mat_metric: Metric, linkage: LinkageMethod) ->
         log::warn!("{}", d3.to_json());
         log::warn!("{:?}", cluster.leaf_ordering());
 
-        // WARN: Remove below utility line
-        // _ = d3.write_json("./tree.json");
+        // WARN: Remove below utility lines
+        _ = write_raw_scores_json("./scores.json", &res.raw_scores);
+        _ = d3.write_json("./tree.json");
 
         return Some(d3.to_json());
     } else {
         return None;
     }
+}
+
+/// Helper function to write scores to json
+fn write_raw_scores_json<K, V>(fp: &str, hd_res: &HashMap<K, V>) -> Result<(), Box<dyn Error>>
+where
+    K: Serialize,
+    V: Serialize,
+{
+    let j_str =
+        serde_json::to_string(&hd_res).map_err(|e| format!("Serialization error: {}", e))?;
+
+    let mut file = File::create(fp)?;
+    _ = file.write_all(j_str.as_bytes());
+
+    return Ok(());
 }
 
 fn grab_col_idx_as_str(df: &DataFrame, idx: usize) -> PolarsResult<HashMap<usize, String>> {
