@@ -62,6 +62,10 @@ at your computer any where!
 - [ ] Implement visualization and visual analysis
   - [ ] Implement Heatmap view
     - _Use: HTMLCanvas for heatmaps. D3 doesn't work well with large data_
+    - [x] Implment heatmap
+    - **Functionality**
+      - [ ] Add zoom capabilities
+      - [ ] Fit entire heatmap onto entire canvas
     - Use new clustering library
     - [ ] Integrate clustering library to app's rust library
       - [x] Convert json tree into D3 compliant json tree
