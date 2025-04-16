@@ -1,23 +1,62 @@
 <script lang="ts">
 	import * as d3 from "d3";
 	import { onMount } from "svelte";
-	import type { D3Node } from "../types/treeTypes";
+	import type { D3Node } from "../types/clustermapTypes";
 	import type { HierarchyPointNode, HierarchyPointLink } from "d3-hierarchy";
 
 	const tree: string = "/tree.json";
 	const scores: string = "/scores.json";
 
 	let d3_tree: D3Node;
-	let svgDiv: HTMLDivElement;
+	let canvas: HTMLCanvasElement;
+
+	let heatmapRaw: Record<string, Record<string, number>>;
+	let heatmapData: {
+		rows: string[];
+		cols: string[];
+		cells: { row: string; col: string; value: number }[];
+	} = { rows: [], cols: [], cells: [] };
+
+	async function fetch_json<T>(path: string): Promise<T> {
+		const response = await fetch(path);
+		return response.json() as T;
+	}
 
 	onMount(async () => {
-		const response = await fetch(tree);
-		const raw = await response.json();
-		console.log(raw);
+		// grab tree
+		const rawTree = await fetch_json<D3Node>(tree);
+		console.log(rawTree);
 
-		d3_tree = raw as D3Node;
-		drawDendrogram();
+		d3_tree = rawTree;
+		// drawDendrogram();
+
+		// grab heatmap data
+		const rawHeatData =
+			await fetch_json<Record<string, Record<string, number>>>(scores);
+		heatmapRaw = rawHeatData;
+		// console.log(heatmapRaw);
+
+		//process heatmap data
+		heatmapData.rows = Object.keys(heatmapRaw);
+		if (heatmapData.rows.length > 0) {
+			heatmapData.cols = Object.keys(heatmapRaw[heatmapData.rows[0]]);
+		}
+		heatmapData.rows.forEach((row: string) => {
+			heatmapData.cols.forEach((col: string) => {
+				heatmapData.cells.push({
+					row,
+					col,
+					value: heatmapRaw[row][col],
+				});
+			});
+		});
+
+		console.log(heatmapData);
+
+		drawSVG();
 	});
+
+	function drawSVG() {}
 
 	function drawDendrogram() {
 		if (!d3_tree) return;
@@ -82,4 +121,4 @@
 </script>
 
 <h1>Hello World!</h1>
-<div bind:this={svgDiv}></div>
+<div bind:this={canvas}></div>
