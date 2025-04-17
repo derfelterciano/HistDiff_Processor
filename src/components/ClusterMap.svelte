@@ -19,6 +19,11 @@
 		initPanZoom,
 		type PanZoomState,
 	} from "./clusterMap/panZoom.svelte";
+	import {
+		createHeatmapBuff,
+		createTreeBuff,
+		blitBuffers,
+	} from "./clusterMap/canvasBuffers.svelte";
 
 	// WARNING: Test URLS
 	const tree: string = "/tree.json";
@@ -49,6 +54,8 @@
 
 	//cached layout
 	let layout: TreeLayout;
+	let treeBuf: HTMLCanvasElement;
+	let heatmapBuff: HTMLCanvasElement;
 
 	onMount(async () => {
 		// grab tree
@@ -72,12 +79,6 @@
 		window.addEventListener("resize", resizeCanvas);
 		resizeCanvas();
 		cleanUpPanZoom = initPanZoom(canvas, panZoom, drawCanvas);
-
-		// get dimensions
-		// const heatmapWidth = heatmapData.cols.length * cellSize;
-		// const heatmapHeight = heatmapData.rows.length * cellSize;
-		// totalWidth = treeWidth + heatmapWidth;
-		// totalHeight = Math.max(heatmapHeight, 600);
 	});
 
 	onDestroy(() => {
@@ -108,7 +109,16 @@
 		cellWidth = (totalWidth - treeWidth) / heatmapCols;
 		cellHeight = totalHeight / heatmapRows;
 
-		drawCanvas();
+		// drawCanvas();
+
+		layout = computeTreeLayout(d3_tree, totalHeight, treeWidth);
+		treeBuf = createTreeBuff(layout, treeWidth, totalHeight);
+		heatmapBuff = createHeatmapBuff(
+			heatmapData,
+			heatmapRaw,
+			layout.leafOrder,
+			contrast,
+		);
 	}
 
 	// drawing canvas functions
@@ -126,16 +136,13 @@
 
 		layout = computeTreeLayout(d3_tree, totalHeight, treeWidth);
 
-		drawTree(ctx, layout.root, treeWidth);
-		drawHeatmap(
+		blitBuffers(
 			ctx,
-			heatmapData,
-			heatmapRaw,
-			layout.leafOrder,
+			treeBuf,
+			heatmapBuff,
 			treeWidth,
 			cellWidth,
 			cellHeight,
-			contrast,
 		);
 
 		ctx.restore();
