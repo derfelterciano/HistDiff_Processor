@@ -64,8 +64,12 @@ at your computer any where!
     - _Use: HTMLCanvas for heatmaps. D3 doesn't work well with large data_
     - [x] Implment heatmap
     - **Functionality**
-      - [ ] Add zoom capabilities
-      - [ ] Fit entire heatmap onto entire canvas
+      - [x] Add zoom capabilities
+      - [x] Fit entire heatmap onto entire canvas
+      - [ ] Fix dendrogram trees so it has highest quality
+      - [ ] Add zoom in and out button
+      - [ ] fix canvas so it sits nicely in window
+      - [ ] add tool tips hover so uses can see cell info
     - Use new clustering library
     - [ ] Integrate clustering library to app's rust library
       - [x] Convert json tree into D3 compliant json tree
