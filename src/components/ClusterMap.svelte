@@ -22,14 +22,19 @@
 		return response.json() as T;
 	}
 
-	const treeWidth = 100;
-	const cellSize = 10;
+	let treeWidth: number, cellWidth: number, cellHeight: number;
 	let totalWidth: number, totalHeight: number;
 
 	let contrast: { contMin: number; contMax: number } = {
 		contMin: 0,
 		contMax: 1,
 	};
+
+	let scale = 1;
+	let translateX = 0;
+	let translateY = 0;
+	const MIN_SCALE = 0.2,
+		MAX_SCALE = 10;
 
 	onMount(async () => {
 		// grab tree
@@ -66,18 +71,47 @@
 		contrast.contMax = d3.max(vals) ?? 1;
 
 		// get dimensions
-		const heatmapWidth = heatmapData.cols.length * cellSize;
-		const heatmapHeight = heatmapData.rows.length * cellSize;
-		totalWidth = treeWidth + heatmapWidth;
-		totalHeight = Math.max(heatmapHeight, 600);
+		// const heatmapWidth = heatmapData.cols.length * cellSize;
+		// const heatmapHeight = heatmapData.rows.length * cellSize;
+		// totalWidth = treeWidth + heatmapWidth;
+		// totalHeight = Math.max(heatmapHeight, 600);
 
-		resizeCanvas();
+		await tick();
 		window.addEventListener("resize", resizeCanvas);
+		resizeCanvas();
+
+		canvas.addEventListener("wheel", handleWheel, { passive: false });
 	});
 
 	onDestroy(() => {
+		canvas.removeEventListener("wheel", handleWheel);
 		window.removeEventListener("resize", resizeCanvas);
 	});
+
+	function resetView() {
+		scale = 1;
+		translateX = 0;
+		translateY = 0;
+
+		resizeCanvas();
+	}
+
+	function handleWheel(evt: WheelEvent) {
+		evt.preventDefault();
+		const zoomFactor = evt.deltaY < 0 ? 1.1 : 0.9;
+		const rect = canvas.getBoundingClientRect();
+		const mx = evt.clientX - rect.left;
+		const my = evt.clientY - rect.top;
+		const newScale = Math.min(
+			MAX_SCALE,
+			Math.max(MIN_SCALE, scale * zoomFactor),
+		);
+		const actualZoom = newScale / scale;
+		scale = newScale;
+		translateX = mx - actualZoom * (mx - translateX);
+		translateY = my - actualZoom * (my - translateY);
+		drawCanvas();
+	}
 
 	function resizeCanvas() {
 		if (!canvas) return;
@@ -86,6 +120,14 @@
 
 		totalWidth = canvas.width;
 		totalHeight = canvas.height;
+
+		const treeSpace: number = 0.1;
+		treeWidth = Math.max(100, totalWidth * treeSpace);
+
+		const heatmapCols = heatmapData.cols.length;
+		const heatmapRows = heatmapData.rows.length;
+		cellWidth = (totalWidth - treeWidth) / heatmapCols;
+		cellHeight = totalHeight / heatmapRows;
 
 		drawCanvas();
 	}
@@ -97,15 +139,21 @@
 		const ctx = canvas.getContext("2d");
 		if (!ctx) return;
 
+		ctx.clearRect(0, 0, totalWidth, totalHeight);
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+		ctx.save();
+		ctx.translate(translateX, translateY);
+		ctx.scale(scale, scale);
+
 		const root = d3.hierarchy<D3Node>(d3_tree);
 		const cluster = d3.cluster<D3Node>().size([totalHeight, treeWidth]);
 		cluster(root);
 
 		const leafOrder: string[] = root.leaves().map((n) => n.data.name!);
 
-		canvas.width = totalWidth;
-		canvas.height = totalHeight;
-		ctx.clearRect(0, 0, totalWidth, totalHeight);
+		// canvas.width = totalWidth;
+		// canvas.height = totalHeight;
 
 		drawTree(ctx, root);
 		drawHeatmap(ctx, leafOrder);
@@ -148,77 +196,21 @@
 		rowOrder.forEach((row, r) => {
 			heatmapData.cols.forEach((col, c) => {
 				const value = heatmapRaw[row][col];
-				const x = treeWidth + c * cellSize;
-				const y = r * cellSize;
+				const x = treeWidth + c * cellWidth;
+				const y = r * cellHeight;
 				ctx.fillStyle = colorScale(value);
-				ctx.fillRect(x, y, cellSize, cellSize);
+				ctx.fillRect(x, y, cellWidth, cellHeight);
 			});
 		});
 	}
 
 	function drawSVG() {}
-
-	// function drawDendrogram() {
-	// 	if (!d3_tree) return;
-	//
-	// 	svgDiv.innerHTML = "";
-	//
-	// 	const width = 600;
-	// 	const height = 1000;
-	// 	const margin = { top: 20, right: 90, bottom: 30, left: 90 };
-	//
-	// 	const svg = d3
-	// 		.select(svgDiv)
-	// 		.append("svg")
-	// 		.attr("width", width + margin.left + margin.right)
-	// 		.attr("height", height + margin.top + margin.bottom);
-	//
-	// 	const g = svg
-	// 		.append("g")
-	// 		.attr("transform", `translate(${margin.left},${margin.top})`);
-	//
-	// 	const root = d3.hierarchy<D3Node>(d3_tree);
-	//
-	// 	const cluster = d3
-	// 		.cluster<D3Node>()
-	// 		.size([
-	// 			height - margin.top - margin.bottom,
-	// 			width - margin.left - margin.right,
-	// 		]);
-	//
-	// 	cluster(root);
-	//
-	// 	function rightAnglePath(d: {
-	// 		source: HierarchyPointNode<D3Node>;
-	// 		target: HierarchyPointNode<D3Node>;
-	// 	}): string {
-	// 		// Move to the source point, draw a vertical line down/up to the target’s x value,
-	// 		// then draw a horizontal line to the target's y value.
-	// 		return `M${d.source.y},${d.source.x} V${d.target.x} H${d.target.y}`;
-	// 	}
-	//
-	// 	g.selectAll("path.link")
-	// 		.data(root.links() as HierarchyPointLink<D3Node>[])
-	// 		.enter()
-	// 		.append("path")
-	// 		.attr("class", "link")
-	// 		.attr("d", rightAnglePath)
-	// 		.attr("fill", "none")
-	// 		.attr("stroke", "#ccc");
-	//
-	// 	g.selectAll("circle.node")
-	// 		.data(root.descendants() as HierarchyPointNode<D3Node>[])
-	// 		.enter()
-	// 		.append("circle")
-	// 		.attr("class", "node")
-	// 		.attr("cx", (d: HierarchyPointNode<D3Node>) => d.y)
-	// 		.attr("cy", (d: HierarchyPointNode<D3Node>) => d.x)
-	// 		.attr("r", 3)
-	// 		.attr("fill", (d: HierarchyPointNode<D3Node>) =>
-	// 			d.children ? "steelblue" : "orange",
-	// 		);
-	// }
 </script>
 
-<h1>Hello World!</h1>
+<h1>Cluster Map</h1>
+<button
+	type="button"
+	class="bg-red-400 hover:bg-red-300 rounded p-1"
+	onclick={resetView}>Reset View</button
+>
 <canvas bind:this={canvas}></canvas>
