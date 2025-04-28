@@ -73,11 +73,14 @@
 		// contrast
 		// contrast = computeContrast(heatmapData.cells);
 		contrast = { min: -0.005, max: 0.005 };
+		// panZoom.minScale = computeMinSize();
 
 		//set up canvas
 		await tick();
 		window.addEventListener("resize", resizeCanvas);
 		resizeCanvas();
+		drawCanvas();
+
 		cleanUpPanZoom = initPanZoom(canvas, panZoom, drawCanvas);
 	});
 
@@ -85,6 +88,17 @@
 		window.removeEventListener("resize", resizeCanvas);
 		cleanUpPanZoom();
 	});
+
+	function computeMinSize() {
+		const fullWidth = treeWidth + cellWidth * heatmapData.cols.length;
+		const fullHeight = cellHeight * heatmapData.rows.length;
+
+		return Math.min(
+			window.innerWidth / fullWidth,
+			window.innerHeight / fullHeight,
+			1,
+		);
+	}
 
 	function resetView() {
 		panZoom.scale = 1;
@@ -95,8 +109,17 @@
 
 	function resizeCanvas() {
 		if (!canvas) return;
-		canvas.width = window.innerWidth;
-		canvas.height = window.innerHeight;
+		const dpr = window.devicePixelRatio || 1;
+
+		canvas.style.width = `${window.innerWidth}px`;
+		canvas.style.height = `${window.innerHeight}px`;
+		canvas.width = window.innerWidth * dpr;
+		canvas.height = window.innerHeight * dpr;
+
+		const ctx = canvas.getContext("2d");
+		if (!ctx) return;
+		ctx.resetTransform();
+		ctx.scale(dpr, dpr);
 
 		totalWidth = canvas.width;
 		totalHeight = canvas.height;
@@ -112,13 +135,15 @@
 		// drawCanvas();
 
 		layout = computeTreeLayout(d3_tree, totalHeight, treeWidth);
-		treeBuf = createTreeBuff(layout, treeWidth, totalHeight);
+		treeBuf = createTreeBuff(layout, treeWidth, totalHeight, dpr);
 		heatmapBuff = createHeatmapBuff(
 			heatmapData,
 			heatmapRaw,
 			layout.leafOrder,
 			contrast,
 		);
+
+		drawCanvas();
 	}
 
 	// drawing canvas functions
@@ -127,12 +152,18 @@
 		if (!canvas) return;
 		const ctx = canvas.getContext("2d");
 		if (!ctx) return;
+		const dpr = window.devicePixelRatio || 1;
 
 		// pan + zoom
 		ctx.save();
+		ctx.resetTransform();
 		ctx.clearRect(0, 0, totalWidth, totalHeight);
+		ctx.scale(dpr, dpr);
+
 		ctx.translate(panZoom.tx, panZoom.ty);
 		ctx.scale(panZoom.scale, panZoom.scale);
+
+		ctx.imageSmoothingEnabled = false;
 
 		layout = computeTreeLayout(d3_tree, totalHeight, treeWidth);
 
