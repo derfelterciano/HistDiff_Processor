@@ -8,7 +8,7 @@ export interface HeatmapData {
 }
 
 /**JSON fetcher (not for production)**/
-async function fetchJSON<T>(path: string): Promise<T> {
+export async function fetchJSON<T>(path: string): Promise<T> {
 	const response = await fetch(path);
 	return response.json() as T;
 }

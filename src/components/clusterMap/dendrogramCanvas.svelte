@@ -1,18 +1,33 @@
 <script lang="ts">
-	import { onMount } from "svelte";
 	import { panZoom } from "./panZoomStore.svelte";
 	import * as d3 from "d3";
 	import type { D3Node } from "../../types/clustermapTypes";
 
-	export let treeData: D3Node;
-	export let width: number;
-	export let height: number;
-	export let orientation: "left" | "top";
+	// export let treeData: D3Node;
+	// export let width: number;
+	// export let height: number;
+	// export let orientation: "left" | "top";
 
-	let canvas: HTMLCanvasElement;
-	let dpr = 1;
+	const { treeData, width, height, orientation } = $props<{
+		treeData: D3Node;
+		width: number;
+		height: number;
+		orientation: "left" | "top";
+	}>();
 
-	$: $panZoom, treeData, draw();
+	let canvas = $state<HTMLCanvasElement>();
+	let dpr = $state<number>(1);
+
+	// $: $panZoom, treeData, draw();
+
+	$effect(() => {
+		$panZoom;
+		treeData;
+		width;
+		height;
+		resize();
+		draw();
+	});
 
 	function draw() {
 		if (!canvas || !treeData) return;
@@ -28,17 +43,27 @@
 
 		// pan/zoom
 		const { scale, tx, ty } = $panZoom;
-		ctx.translate(tx, ty);
-		ctx.scale(scale, scale);
 
-		ctx.strokeStyle = "#555";
-		ctx.fillStyle = "#444";
+		if (orientation === "left") {
+			ctx.translate(0, ty);
+			// ctx.scale(scale, 1);
+		} else {
+			ctx.translate(tx, 0);
+			// ctx.scale(1, scale);
+		}
+
+		ctx.strokeStyle = "#ccc";
 
 		// D3 hierarchy and clustering
 		const root = d3.hierarchy(treeData);
-		const layout = d3
-			.cluster<d3.HierarchyPointNode<D3Node>>()
-			.size(orientation === "left" ? [height, width] : [width, height]);
+		const layout = d3.cluster<d3.HierarchyPointNode<D3Node>>();
+
+		const leafSpacing =
+			orientation === "left" ? height * scale : width * scale;
+		const branchLen = orientation === "left" ? width : height;
+
+		layout.size([leafSpacing, branchLen]);
+
 		layout(root as any);
 
 		// draw elbow links
@@ -47,14 +72,14 @@
 			const s: any = link.source,
 				t: any = link.target;
 			if (orientation === "left") {
-				// hori tree = (y,x)
+				// vert tree = (y,x)
 				ctx.moveTo(s.y, s.x);
-				ctx.lineTo(t.y, s.x);
+				ctx.lineTo(s.y, t.x);
 				ctx.lineTo(t.y, t.x);
 			} else {
-				// vert tree: (x,y)
+				// horizontal tree: (x,y)
 				ctx.moveTo(s.x, s.y);
-				ctx.lineTo(s.x, t.y);
+				ctx.lineTo(t.x, s.y);
 				ctx.lineTo(t.x, t.y);
 			}
 		});
@@ -66,6 +91,7 @@
 			const y = orientation === "left" ? n.x : n.y;
 			ctx.beginPath();
 			ctx.arc(x as number, y as number, 3, 0, Math.PI * 2);
+			ctx.fillStyle = n.children ? "steelblue" : "orange";
 			ctx.fill();
 		});
 	}
@@ -84,9 +110,58 @@
 		draw();
 	}
 
-	onMount(() => {
-		dpr = window.devicePixelRatio || 1;
-		resize();
+	// === PANNING ===
+
+	function handlePanning(): () => void {
+		if (!canvas) return () => {};
+
+		let dragging = false;
+		let lastX = 0,
+			lastY = 0;
+
+		const onDown = (e: MouseEvent) => {
+			dragging = true;
+			lastX = e.clientX;
+			lastY = e.clientY;
+			e.preventDefault();
+		};
+
+		const onMove = (e: MouseEvent) => {
+			if (!dragging) return;
+
+			const dx = e.clientX - lastX;
+			const dy = e.clientY - lastY;
+			(lastX = e.clientX), (lastY = e.clientY);
+			if (orientation === "left") {
+				panZoom.pan(0, dy);
+			} else {
+				panZoom.pan(dx, 0);
+			}
+		};
+
+		const onUp = () => {
+			dragging = false;
+		};
+
+		canvas.addEventListener("mousedown", onDown);
+		window.addEventListener("mousemove", onMove);
+		window.addEventListener("mouseup", onUp);
+
+		return () => {
+			if (!canvas) return () => {};
+
+			canvas.removeEventListener("mousedown", onDown);
+			window.removeEventListener("mouseup", onUp);
+			window.removeEventListener("mousemove", onMove);
+		};
+	}
+
+	let cleanupPanning: () => void;
+	$effect(() => {
+		if (!canvas) return;
+		cleanupPanning = handlePanning();
+
+		return cleanupPanning;
 	});
 </script>
 
