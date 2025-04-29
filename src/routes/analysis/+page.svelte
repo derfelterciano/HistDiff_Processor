@@ -2,4 +2,4 @@
 	import ClusterMap from "../../components/ClusterMap.svelte";
 </script>
 
-<ClusterMap />
+<!-- <ClusterMap /> -->
