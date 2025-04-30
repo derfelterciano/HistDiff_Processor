@@ -33,6 +33,46 @@
 	let minVal = $derived(() => Math.min(...data.cells.map((c) => c.value)));
 	let maxVal = $derived(() => Math.max(...data.cells.map((c) => c.value)));
 
+	function updateBuffer() {
+		data;
+		raw;
+		rowOrder;
+		colOrder;
+		width;
+		height;
+		dpr;
+		const { scale } = $panZoom;
+
+		dpr = window.devicePixelRatio || 1;
+
+		// make offscreen buffer
+		const buf = document.createElement("canvas");
+		buf.width = width * dpr * scale;
+		buf.height = height * scale;
+		const bctx = buf.getContext("2d");
+		if (!bctx) return;
+
+		bctx.resetTransform();
+		bctx.clearRect(0, 0, buf.width, buf.height);
+
+		bctx.scale(dpr * scale, dpr * scale);
+		bctx.imageSmoothingEnabled = false;
+
+		const color = d3
+			.scaleSequential(d3.interpolateViridis)
+			.domain([-0.005, 0.005]); // TODO: Swap out with min and max vals
+
+		rowOrder.forEach((rKey, i) => {
+			colOrder.forEach((cKey, j) => {
+				const v = raw[rKey][cKey];
+				bctx.fillStyle = color(v);
+				bctx.fillRect(j * cellW(), i * cellH(), cellW(), cellH());
+			});
+		});
+
+		buffer = buf;
+	}
+
 	// create an offscreen buffer
 	function createBuffer() {
 		if (!canvas) return;
@@ -63,6 +103,31 @@
 		});
 
 		buffer = buf;
+	}
+
+	function renderCanvas() {
+		if (!canvas || !buffer) return;
+		const ctx = canvas.getContext("2d");
+		if (!ctx) return;
+
+		ctx.resetTransform();
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+		const { tx, ty } = $panZoom;
+
+		ctx.translate(tx, ty);
+		ctx.imageSmoothingEnabled = false;
+		ctx.drawImage(
+			buffer,
+			0,
+			0,
+			buffer.width,
+			buffer.height,
+			0,
+			0,
+			width,
+			height,
+		);
 	}
 
 	function draw() {
@@ -115,12 +180,14 @@
 		cellW();
 		cellH();
 		dpr;
+		// updateBuffer();
 		createBuffer();
 	});
 
 	// draw reactivly
 	$effect(() => {
 		resize();
+		// renderCanvas();
 		draw();
 	});
 
@@ -128,6 +195,7 @@
 	$effect(() => {
 		const onR = () => {
 			resize();
+			// renderCanvas();
 			draw();
 		};
 		window.addEventListener("resize", onR);
@@ -138,6 +206,7 @@
 	});
 
 	// panning effect
+	let panRebuildTimer: number;
 	$effect(() => {
 		if (!canvas) return;
 
@@ -166,6 +235,14 @@
 			dragging = false;
 		};
 
+		// schedule buffer rebuild
+		// clearTimeout(panRebuildTimer);
+		// panRebuildTimer = window.setTimeout(() => {
+		// 	updateBuffer();
+		// 	resize();
+		// 	renderCanvas();
+		// }, 200);
+
 		canvas.addEventListener("mousedown", down);
 		window.addEventListener("mousemove", move);
 		window.addEventListener("mouseup", up);
@@ -177,6 +254,26 @@
 			window.removeEventListener("mouseup", up);
 		};
 	});
+	// $effect(() => {
+	// 	data;
+	// 	raw;
+	// 	rowOrder;
+	// 	colOrder;
+	// 	width;
+	// 	height;
+	// 	dpr;
+	// 	updateBuffer(); // build at current scale (initially 1×)
+	// 	resize();
+	// 	renderCanvas();
+	// });
 </script>
 
-<canvas bind:this={canvas} style="display:block"></canvas>
+<canvas class="pixelated" bind:this={canvas} style="display:block"></canvas>
+
+<style>
+	.pixelated {
+		image-rendering: pixelated;
+		image-rendering: crisp-edges;
+		-ms-interpolation-mode: nearest-neighbor;
+	}
+</style>
