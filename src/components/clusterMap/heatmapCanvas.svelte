@@ -1,152 +1,82 @@
 <script lang="ts">
-	import { onMount, onDestroy } from "svelte";
 	import { panZoom } from "./panZoomStore.svelte";
 	import * as d3 from "d3";
 	import type { HeatmapData } from "./data";
 
-	/**
-	- data -> HeatMapData type with appropriate types filled
-	- raw -> raw data for raw record lookup
-	- rowOrder and colOrder array of keys for ordering
-	- width / height css pixel dimensions of heatmap panel
-	*/
-
+	// ── 1) Props ─────────────────────────────────────────────────────────────
 	interface Props {
 		data: HeatmapData;
 		raw: Record<string, Record<string, number>>;
 		rowOrder: string[];
 		colOrder: string[];
-		width: number;
-		height: number;
+		width: number; // CSS px of heatmap panel
+		height: number; // CSS px
 	}
-
 	const { data, raw, rowOrder, colOrder, width, height }: Props = $props();
 
+	// ── 2) Local canvases ─────────────────────────────────────────────────────
 	let canvas = $state<HTMLCanvasElement>();
 	let buffer = $state<HTMLCanvasElement>();
-	let dpr = $state<number>(1);
 
-	let cellW = $derived(() => width / colOrder.length);
-	let cellH = $derived(() => height / rowOrder.length);
+	// ── 3) Deriveds ───────────────────────────────────────────────────────────
+	// how many columns / rows
+	const cols = $derived(() => colOrder.length);
+	const rows = $derived(() => rowOrder.length);
 
-	// min and max contrast vals
-	let minVal = $derived(() => Math.min(...data.cells.map((c) => c.value)));
-	let maxVal = $derived(() => Math.max(...data.cells.map((c) => c.value)));
+	// each cell’s size (in CSS px)
+	const cellW = $derived(() => width / cols());
+	const cellH = $derived(() => height / rows());
 
-	function updateBuffer() {
-		data;
-		raw;
-		rowOrder;
-		colOrder;
-		width;
-		height;
-		dpr;
-		const { scale } = $panZoom;
-
-		dpr = window.devicePixelRatio || 1;
-
-		// make offscreen buffer
+	// ── 4) Build offscreen 1px-per-cell buffer ────────────────────────────────
+	function buildBuffer() {
+		if (!cols() || !rows() || !canvas) return;
+		// 1) create offscreen at cols×rows
 		const buf = document.createElement("canvas");
-		buf.width = width * dpr * scale;
-		buf.height = height * scale;
-		const bctx = buf.getContext("2d");
-		if (!bctx) return;
-
-		bctx.resetTransform();
-		bctx.clearRect(0, 0, buf.width, buf.height);
-
-		bctx.scale(dpr * scale, dpr * scale);
-		bctx.imageSmoothingEnabled = false;
-
-		const color = d3
-			.scaleSequential(d3.interpolateViridis)
-			.domain([-0.005, 0.005]); // TODO: Swap out with min and max vals
-
-		rowOrder.forEach((rKey, i) => {
-			colOrder.forEach((cKey, j) => {
-				const v = raw[rKey][cKey];
-				bctx.fillStyle = color(v);
-				bctx.fillRect(j * cellW(), i * cellH(), cellW(), cellH());
-			});
-		});
-
-		buffer = buf;
-	}
-
-	// create an offscreen buffer
-	function createBuffer() {
-		if (!canvas) return;
-
-		dpr = window.devicePixelRatio || 1;
-
-		const buf = document.createElement("canvas");
-		buf.width = width * dpr;
-		buf.height = height * dpr;
-		const bctx = buf.getContext("2d");
-		if (!bctx) return;
-
-		// css buffer
-		bctx.scale(dpr, dpr);
-		bctx.imageSmoothingEnabled = false;
-
-		// cells should be painted once
-		const color = d3
-			.scaleSequential(d3.interpolateViridis)
-			.domain([-0.005, 0.005]); // TODO: Swap out with min and max vals
-
-		rowOrder.forEach((rKey, i) => {
-			colOrder.forEach((cKey, j) => {
-				const v = raw[rKey][cKey];
-				bctx.fillStyle = color(v);
-				bctx.fillRect(j * cellW(), i * cellH(), cellW(), cellH());
-			});
-		});
-
-		buffer = buf;
-	}
-
-	function renderCanvas() {
-		if (!canvas || !buffer) return;
-		const ctx = canvas.getContext("2d");
-		if (!ctx) return;
-
-		ctx.resetTransform();
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-		const { tx, ty } = $panZoom;
-
-		ctx.translate(tx, ty);
+		buf.width = cols();
+		buf.height = rows();
+		const ctx = buf.getContext("2d")!;
 		ctx.imageSmoothingEnabled = false;
-		ctx.drawImage(
-			buffer,
-			0,
-			0,
-			buffer.width,
-			buffer.height,
-			0,
-			0,
-			width,
-			height,
-		);
+
+		// 2) color scale
+		const values = data.cells.map((c) => c.value);
+		const colorFn = d3
+			.scaleSequential(d3.interpolateViridis)
+			.domain([-0.005, 0.005]) as any;
+
+		// 3) paint one pixel per cell
+		for (let i = 0; i < rows(); i++) {
+			for (let j = 0; j < cols(); j++) {
+				ctx.fillStyle = colorFn(raw[rowOrder[i]][colOrder[j]]);
+				ctx.fillRect(j, i, 1, 1);
+			}
+		}
+
+		buffer = buf;
 	}
 
+	// ── 5) Draw into onscreen canvas, scaling each pixel → cellW×cellH ────────
 	function draw() {
 		if (!canvas || !buffer) return;
-		const ctx = canvas.getContext("2d");
-		if (!ctx) return;
-
-		// clear and map css buffer
+		const ctx = canvas.getContext("2d")!;
 		ctx.resetTransform();
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		ctx.scale(dpr, dpr);
 
-		// pan and zoom
+		// map CSS panel → backing-store
+		canvas.style.width = `${width}px`;
+		canvas.style.height = `${height}px`;
+		canvas.width = Math.round(cols() * cellW());
+		canvas.height = Math.round(rows() * cellH());
+
+		ctx.imageSmoothingEnabled = false;
+
+		// pan/zoom
 		const { tx, ty, scale } = $panZoom;
 		ctx.translate(tx, ty);
 		ctx.scale(scale, scale);
-		ctx.imageSmoothingEnabled = false;
 
-		// blit heatmap
+		// single draw call:
+		// source: buffer (cols×rows px)
+		// dest:   [ treeWidth,0 ] then [cols*cellW,rows*cellH]
 		ctx.drawImage(
 			buffer,
 			0,
@@ -155,58 +85,29 @@
 			buffer.height,
 			0,
 			0,
-			width,
-			height,
+			cols() * cellW(),
+			rows() * cellH(),
 		);
 	}
-	function resize() {
-		if (!canvas) return;
 
-		dpr = window.devicePixelRatio || 1;
-		canvas.style.width = `${width}px`;
-		canvas.style.height = `${height}px`;
-		canvas.width = width * dpr;
-		canvas.height = height * dpr;
-	}
-
-	// rebuild buffer reactivly
+	// ── 6) Reactivity ─────────────────────────────────────────────────────────
+	// rebuild buffer whenever data or ordering changes
 	$effect(() => {
 		data;
 		raw;
 		rowOrder;
 		colOrder;
+		buildBuffer();
+	});
+
+	// draw whenever panel size OR panZoom OR buffer changes
+	$effect(() => {
 		width;
 		height;
-		cellW();
-		cellH();
-		dpr;
-		// updateBuffer();
-		createBuffer();
-	});
-
-	// draw reactivly
-	$effect(() => {
-		resize();
-		// renderCanvas();
+		$panZoom;
+		buffer;
 		draw();
 	});
-
-	// resize effect
-	$effect(() => {
-		const onR = () => {
-			resize();
-			// renderCanvas();
-			draw();
-		};
-		window.addEventListener("resize", onR);
-
-		return () => {
-			window.removeEventListener("resize", onR);
-		};
-	});
-
-	// panning effect
-	let panRebuildTimer: number;
 	$effect(() => {
 		if (!canvas) return;
 
@@ -235,14 +136,6 @@
 			dragging = false;
 		};
 
-		// schedule buffer rebuild
-		// clearTimeout(panRebuildTimer);
-		// panRebuildTimer = window.setTimeout(() => {
-		// 	updateBuffer();
-		// 	resize();
-		// 	renderCanvas();
-		// }, 200);
-
 		canvas.addEventListener("mousedown", down);
 		window.addEventListener("mousemove", move);
 		window.addEventListener("mouseup", up);
@@ -254,26 +147,14 @@
 			window.removeEventListener("mouseup", up);
 		};
 	});
-	// $effect(() => {
-	// 	data;
-	// 	raw;
-	// 	rowOrder;
-	// 	colOrder;
-	// 	width;
-	// 	height;
-	// 	dpr;
-	// 	updateBuffer(); // build at current scale (initially 1×)
-	// 	resize();
-	// 	renderCanvas();
-	// });
 </script>
 
-<canvas class="pixelated" bind:this={canvas} style="display:block"></canvas>
-
-<style>
-	.pixelated {
-		image-rendering: pixelated;
-		image-rendering: crisp-edges;
-		-ms-interpolation-mode: nearest-neighbor;
-	}
-</style>
+<canvas
+	bind:this={canvas}
+	style="
+    display: block;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    -ms-interpolation-mode: nearest-neighbor;
+  "
+></canvas>

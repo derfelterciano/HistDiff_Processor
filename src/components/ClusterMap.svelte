@@ -110,14 +110,14 @@
 		<p>Loading Dendrograms...</p>
 	{/if}
 
-	{#if heatmapData && rawHeatmapData && rowOrder().length}
+	{#if heatmapData && rawHeatmapData && (rowOrder() as string[]).length}
 		<!-- Heatmap -->
 		<div class="panel heatmap-panel">
 			<HeatmapCanvas
 				data={heatmapData}
 				raw={rawHeatmapData}
-				rowOrder={rowOrder()}
-				colOrder={colOrder()}
+				rowOrder={rowOrder() as string[]}
+				colOrder={colOrder() as string[]}
 				width={heatmapWidth}
 				height={heatmapHeight}
 			/>
