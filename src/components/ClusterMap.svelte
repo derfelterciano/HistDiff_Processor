@@ -11,6 +11,7 @@
 	} from "./clusterMap/data";
 	import HeatmapCanvas from "./clusterMap/heatmapCanvas.svelte";
 	import { getLeafOrder } from "./clusterMap/utils";
+	import RowLabels from "./clusterMap/rowLabels.svelte";
 
 	let treeData = $state<D3Node | null>(null);
 	let rawHeatmapData = $state<Record<string, Record<string, number>> | null>(
@@ -22,13 +23,16 @@
 	const tree: string = "/tree.json";
 	const scores: string = "/scores.json";
 	const TREE_WIDTH = 200;
+	const LABEL_WIDTH = 200;
 
 	// panel dimensions
 	let treeWidth = $state<number>(TREE_WIDTH);
 	let treeHeight = $state<number>(window.innerHeight);
-	let heatmapWidth = $state<number>(window.innerWidth - TREE_WIDTH);
+	let heatmapWidth = $state<number>(
+		window.innerWidth - TREE_WIDTH - LABEL_WIDTH,
+	);
 	let heatmapHeight = $state<number>(treeHeight);
-
+	let labelW = $state<number>(LABEL_WIDTH);
 	// load data
 	// $effect(async () => {
 	// 	treeData = await loadTreeData(tree);
@@ -48,7 +52,7 @@
 	$effect(() => {
 		const onR = () => {
 			treeHeight = window.innerHeight;
-			heatmapWidth = window.innerWidth - TREE_WIDTH;
+			heatmapWidth = window.innerWidth - TREE_WIDTH - LABEL_WIDTH;
 			heatmapHeight = treeHeight;
 		};
 		window.addEventListener("resize", onR);
@@ -67,12 +71,15 @@
 	};
 
 	// derive leaf ordering
-	let rowOrder = $derived(() => {
-		if (!treeData) return;
-		return getLeafOrder(treeData);
+	let rowOrder = $derived((): string[] => {
+		return treeData ? getLeafOrder(treeData) : [];
 	});
 	let colOrder = $derived(() => (heatmapData ? heatmapData.cols : []));
 
+	const cellH = $derived(() => {
+		const rows = (rowOrder() as string[]).length;
+		return rows ? heatmapHeight / rows : 0;
+	});
 	// onMount(async () => {
 	// 	treeData = await loadTreeData(tree);
 	// 	rawHeatmapData = await loadHeatmapData(scores);
@@ -98,21 +105,23 @@
 	>
 </div>
 
-<div class="clustermap flex flex-1 overflow-hidden">
+<div class="clustermap flex overflow-hidden h-full">
 	{#if treeData}
-		<DendrogramCanvas
-			{treeData}
-			orientation="left"
-			width={treeWidth}
-			height={treeHeight}
-		/>
+		<div class="flex-none">
+			<DendrogramCanvas
+				{treeData}
+				orientation="left"
+				width={treeWidth}
+				height={treeHeight}
+			/>
+		</div>
 	{:else}
 		<p>Loading Dendrograms...</p>
 	{/if}
 
 	{#if heatmapData && rawHeatmapData && (rowOrder() as string[]).length}
 		<!-- Heatmap -->
-		<div class="panel heatmap-panel">
+		<div class="flex-1">
 			<HeatmapCanvas
 				data={heatmapData}
 				raw={rawHeatmapData}
@@ -124,5 +133,16 @@
 		</div>
 	{:else if treeData}
 		<p>Loading heatmap…</p>
+	{/if}
+
+	{#if (rowOrder() as string[]).length}
+		<div class="flex-none">
+			<RowLabels
+				rowOrder={rowOrder() as string[]}
+				cellHeight={cellH()}
+				width={labelW}
+				height={heatmapHeight}
+			/>
+		</div>
 	{/if}
 </div>
