@@ -66,7 +66,7 @@ at your computer any where!
     - **Functionality**
       - [x] Add zoom capabilities
       - [x] Fit entire heatmap onto entire canvas
-      - [ ] Fix dendrogram trees so it has highest quality
+      - [x] Fix dendrogram trees so it has highest quality
       - [ ] Add zoom in and out button
       - [ ] fix canvas so it sits nicely in window
       - [ ] add tool tips hover so uses can see cell info

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import DendrogramCanvas from "./clusterMap/dendrogramCanvas.svelte";
-	import { onMount } from "svelte";
 	import { panZoom, type PanZoom } from "./clusterMap/panZoomStore.svelte";
 	import type { D3Node } from "../types/clustermapTypes";
 	import {
@@ -23,23 +22,23 @@
 	const tree: string = "/tree.json";
 	const scores: string = "/scores.json";
 	const TREE_WIDTH = 200;
-	const LABEL_WIDTH = 200;
+	const LABEL_WIDTH = 50;
 
 	// panel dimensions
 	let treeWidth = $state<number>(TREE_WIDTH);
-	let treeHeight = $state<number>(window.innerHeight);
+	// let treeHeight = $state<number>(window.innerHeight);
+	let treeHeight = $state<number>(0);
 	let heatmapWidth = $state<number>(
 		window.innerWidth - TREE_WIDTH - LABEL_WIDTH,
 	);
 	let heatmapHeight = $state<number>(treeHeight);
 	let labelW = $state<number>(LABEL_WIDTH);
-	// load data
-	// $effect(async () => {
-	// 	treeData = await loadTreeData(tree);
-	// 	rawHeatmapData = await loadHeatmapData(scores);
-	// 	heatmapData = loadHeatmap(rawHeatmapData!);
-	// });
 
+	// headers
+	let controlsE1 = $state<HTMLElement>();
+	let contentE1 = $state<HTMLDivElement>();
+
+	// load data
 	$effect(() => {
 		loadTreeData(tree).then((data) => (treeData = data));
 		loadHeatmapData(scores).then((raw) => {
@@ -51,12 +50,27 @@
 	// recalculate dimensions
 	$effect(() => {
 		const onR = () => {
-			treeHeight = window.innerHeight;
+			// treeHeight = window.innerHeight;
+			const headerH = controlsE1?.clientHeight ?? 0;
+			const availH = window.innerHeight - headerH;
+
+			treeHeight = availH;
 			heatmapWidth = window.innerWidth - TREE_WIDTH - LABEL_WIDTH;
 			heatmapHeight = treeHeight;
 		};
+
 		window.addEventListener("resize", onR);
+		onR();
 		return () => window.removeEventListener("resize", onR);
+	});
+
+	// bound effect
+	$effect(() => {
+		const contentW = TREE_WIDTH + LABEL_WIDTH + heatmapWidth;
+		const contentH = Math.max(treeHeight, heatmapHeight);
+
+		panZoom.setMinScale(1);
+		panZoom.setBounds(heatmapWidth, contentH, contentW, contentH);
 	});
 
 	// WARNING: Temporary zoom controls
@@ -87,25 +101,25 @@
 	// });
 </script>
 
-<div class="controls">
+<div class="controls" bind:this={controlsE1}>
 	<button
 		class="bg-red-500 hover:bg-red-400 p-1 border-1 rounded"
 		type="button"
-		on:click={zoomIn}>Zoom In</button
+		onclick={zoomIn}>Zoom In</button
 	>
 	<button
 		class="bg-red-500 hover:bg-red-400 p-1 border-1 rounded"
 		type="button"
-		on:click={zoomOut}>Zoom Out</button
+		onclick={zoomOut}>Zoom Out</button
 	>
 	<button
 		class="bg-red-500 hover:bg-red-400 p-1 border-1 rounded"
 		type="button"
-		on:click={reset}>Reset</button
+		onclick={reset}>Reset</button
 	>
 </div>
 
-<div class="clustermap flex overflow-hidden h-full">
+<div class="clustermap flex overflow-hidden" bind:this={contentE1}>
 	{#if treeData}
 		<div class="flex-none">
 			<DendrogramCanvas
@@ -146,3 +160,11 @@
 		</div>
 	{/if}
 </div>
+
+<style>
+	@reference 'tailwindcss';
+
+	.clustermap {
+		@apply h-[100%];
+	}
+</style>

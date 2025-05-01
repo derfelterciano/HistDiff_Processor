@@ -8,6 +8,12 @@ export interface PanZoom {
 
 	minScale: number;
 	maxScale: number;
+
+	// bounding clamps
+	contentW: number;
+	contentH: number;
+	viewW: number;
+	viewH: number;
 }
 
 function createPanZoomStore() {
@@ -17,27 +23,66 @@ function createPanZoomStore() {
 		ty: 0,
 		minScale: 0.2,
 		maxScale: 10,
+
+		contentW: 0,
+		contentH: 0,
+		viewW: 0,
+		viewH: 0,
 	};
 	const { subscribe, update, set } = writable<PanZoom>(inital);
 
 	return {
 		subscribe,
+		setBounds: (
+			contentW: number,
+			contentH: number,
+			viewW: number,
+			viewH: number,
+		) => update((s) => {
+			return { ...s, contentW, contentH, viewW, viewH };
+		}),
 		zoom: (factor: number) =>
 			update((s) => {
+				// clamp scaling
 				const newScale = Math.min(
 					s.maxScale,
 					Math.max(s.minScale, s.scale * factor),
 				);
-				return { ...s, scale: newScale };
+
+				const minTx = Math.min(0, s.viewW - s.contentW * newScale);
+				const maxTx = 0;
+				const tx = Math.min(maxTx, Math.max(minTx, s.tx));
+
+				const minTy = Math.min(0, s.viewH - s.contentH * newScale);
+				const maxTy = 0;
+				const ty = Math.min(maxTy, Math.max(minTy, s.ty));
+
+				return { ...s, scale: newScale, ty: ty, tx: tx };
 			}),
 		pan: (dx: number, dy: number) =>
-			update((s) => ({
-				...s,
-				tx: s.tx + dx,
-				ty: s.ty + dy,
-			})),
+			update((s) => {
+				const minTx = Math.min(0, s.viewW - s.contentW * s.scale);
+				const maxTx = 0;
+				const tx = Math.min(maxTx, Math.max(minTx, s.tx + dx));
 
-		reset: () => set(inital),
+				const minTy = Math.min(0, s.viewH - s.contentH * s.scale);
+				const maxTy = 0;
+				const ty = Math.min(maxTy, Math.max(minTy, s.ty + dy));
+
+				return { ...s, tx: tx, ty: ty };
+			}),
+
+		reset: () =>
+			update((s) => {
+				return {
+					...s,
+					scale: 1,
+					tx: 0,
+					ty: 0,
+					minScale: 0.2,
+					maxScale: 10,
+				};
+			}),
 
 		setMinScale: (min: number) =>
 			update((s) => {
