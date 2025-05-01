@@ -12,6 +12,10 @@
 	import { getLeafOrder } from "./clusterMap/utils";
 	import RowLabels from "./clusterMap/rowLabels.svelte";
 
+	const { containerHeight } = $props<{ containerHeight: number }>();
+
+	// let containerHeight = $state<number>(window.innerHeight);
+
 	let treeData = $state<D3Node | null>(null);
 	let rawHeatmapData = $state<Record<string, Record<string, number>> | null>(
 		null,
@@ -52,7 +56,7 @@
 		const onR = () => {
 			// treeHeight = window.innerHeight;
 			const headerH = controlsE1?.clientHeight ?? 0;
-			const availH = window.innerHeight - headerH;
+			const availH = containerHeight - headerH;
 
 			treeHeight = availH;
 			heatmapWidth = window.innerWidth - TREE_WIDTH - LABEL_WIDTH;
@@ -119,7 +123,7 @@
 	>
 </div>
 
-<div class="clustermap flex overflow-hidden" bind:this={contentE1}>
+<div class="basic-clustermap flex overflow-hidden" bind:this={contentE1}>
 	{#if treeData}
 		<div class="flex-none">
 			<DendrogramCanvas
@@ -164,7 +168,7 @@
 <style>
 	@reference 'tailwindcss';
 
-	.clustermap {
+	.basic-clustermap {
 		@apply h-[100%];
 	}
 </style>
