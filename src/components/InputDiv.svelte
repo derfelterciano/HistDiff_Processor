@@ -59,6 +59,7 @@
 			invoke("cluster_hd", {
 				matMetric: "Pearson",
 				linkage: "Complete",
+				features: true
 			});
 		});
 	});

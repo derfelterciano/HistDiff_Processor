@@ -12,11 +12,16 @@ use tauri::AppHandle;
 use crate::hd_interface::retrieve_state;
 
 #[tauri::command]
-pub fn cluster_hd(app: AppHandle, mat_metric: Metric, linkage: LinkageMethod) -> Option<String> {
+pub fn cluster_hd(
+    app: AppHandle,
+    mat_metric: Metric,
+    linkage: LinkageMethod,
+    features: bool,
+) -> Option<String> {
     let hd = retrieve_state(&app);
 
     if let Some(res) = hd {
-        let data = res.dataframe_scores?;
+        let mut data = res.dataframe_scores?;
 
         let id_col = grab_col_idx_as_str(&data, 0).unwrap();
 
@@ -26,9 +31,34 @@ pub fn cluster_hd(app: AppHandle, mat_metric: Metric, linkage: LinkageMethod) ->
         log::warn!("{}", d3.to_json());
         log::warn!("{:?}", cluster.leaf_ordering());
 
+        if features {
+            let id_col_name = &data.get_column_names()[0];
+            let mut data_no_id = data.drop(&id_col_name).unwrap();
+
+            let feature_names = data
+                .get_column_names()
+                .iter()
+                .enumerate()
+                .filter(|&(idx, _)| idx != 0)
+                .map(|(_, n)| n.to_string())
+                .collect::<Vec<_>>();
+
+            let id_series = data.column(id_col_name).unwrap().as_series().unwrap();
+            let id_col_names: Vec<String> = id_series.iter().map(|s| s.to_string()).collect();
+
+            let mut transposed_data = data_no_id
+                .transpose(None, Some(rayon::iter::Either::Right(id_col_names)))
+                .unwrap();
+            let feat_col = Column::new("features".into(), feature_names);
+            _ = transposed_data.insert_column(0, feat_col).unwrap();
+
+            log::info!("ORIGINAL: {}", data);
+            log::info!("{}", transposed_data);
+        }
+
         // WARN: Remove below utility lines
-        _ = write_raw_scores_json("./scores.json", &res.raw_scores);
-        _ = d3.write_json("./tree.json");
+        // _ = write_raw_scores_json("./scores.json", &res.raw_scores);
+        // _ = d3.write_json("./tree.json");
 
         return Some(d3.to_json());
     } else {
