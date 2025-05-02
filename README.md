@@ -67,9 +67,12 @@ at your computer any where!
       - [x] Add zoom capabilities
       - [x] Fit entire heatmap onto entire canvas
       - [x] Fix dendrogram trees so it has highest quality
-      - [ ] Add zoom in and out button
+      - [x] Add zoom in and out button
       - [ ] fix canvas so it sits nicely in window
       - [ ] add tool tips hover so uses can see cell info
+    - [ ] Implement dendrograms
+      - [x] Left dendrogram
+      - [ ] Right dendrogram
     - Use new clustering library
     - [ ] Integrate clustering library to app's rust library
       - [x] Convert json tree into D3 compliant json tree
