@@ -49,6 +49,7 @@ pub fn cluster_hd(
             let mut transposed_data = data_no_id
                 .transpose(None, Some(rayon::iter::Either::Right(id_col_names)))
                 .unwrap();
+
             let feat_col = Column::new("features".into(), feature_names);
             _ = transposed_data.insert_column(0, feat_col).unwrap();
 
