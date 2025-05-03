@@ -37,6 +37,10 @@ pub fn cluster_hd(
                 create_hierarchy_from_df(&data, mat_metric, linkage, &Some(vec![0])).unwrap();
             let row_d3 = convert_to_d3(&cluster, &id_col);
 
+            // WARNING: Remove utility lines
+            _ = write_raw_scores_json("./scores.json", &res.raw_scores);
+            _ = row_d3.write_json("./row_tree.json");
+
             log::warn!("{}", row_d3.to_json());
 
             if features {
@@ -65,6 +69,9 @@ pub fn cluster_hd(
                     create_hierarchy_from_df(&data_t, mat_metric, linkage, &None).unwrap();
 
                 let d3_features = convert_to_d3(&cluster_features, &feature_map);
+
+                //WARNING: Remove utility lines
+                _ = d3_features.write_json("./feat_tree.json");
 
                 log::warn!("{}", d3_features.to_json());
             }

@@ -23,7 +23,7 @@
 	let heatmapData = $state<HeatmapData | null>(null);
 
 	// WARNING: Test URLS
-	const tree: string = "/tree.json";
+	const tree: string = "/row_tree.json";
 	const scores: string = "/scores.json";
 	const TREE_WIDTH = 200;
 	const LABEL_WIDTH = 50;
