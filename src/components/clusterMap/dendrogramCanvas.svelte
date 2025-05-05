@@ -58,8 +58,15 @@
 		const root = d3.hierarchy(treeData);
 		const layout = d3.cluster<d3.HierarchyPointNode<D3Node>>();
 
-		const leafSpacing =
-			orientation === "left" ? height * scale : width * scale;
+		const leafCount = root.leaves().length;
+		const cellSize =
+			orientation === "left"
+				? (height * scale) / leafCount
+				: (width * scale) / leafCount;
+
+		// const leafSpacing =
+		// 	orientation === "left" ? height * scale : width * scale;
+		const leafSpacing = cellSize * (leafCount - 1);
 		const branchLen = orientation === "left" ? width : height;
 
 		layout.size([leafSpacing, branchLen]);

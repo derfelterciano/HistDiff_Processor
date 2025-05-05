@@ -22,7 +22,7 @@ function createPanZoomStore() {
 		tx: 0,
 		ty: 0,
 		minScale: 0.2,
-		maxScale: 10,
+		maxScale: 100,
 
 		contentW: 0,
 		contentH: 0,

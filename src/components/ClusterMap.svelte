@@ -11,12 +11,14 @@
 	import HeatmapCanvas from "./clusterMap/heatmapCanvas.svelte";
 	import { getLeafOrder } from "./clusterMap/utils";
 	import RowLabels from "./clusterMap/rowLabels.svelte";
+	import ColumnLabels from "./clusterMap/columnLabels.svelte";
 
 	const { containerHeight } = $props<{ containerHeight: number }>();
 
 	// let containerHeight = $state<number>(window.innerHeight);
 
 	let treeData = $state<D3Node | null>(null);
+	let featTreeData = $state<D3Node | null>(null);
 	let rawHeatmapData = $state<Record<string, Record<string, number>> | null>(
 		null,
 	);
@@ -25,6 +27,9 @@
 	// WARNING: Test URLS
 	const tree: string = "/row_tree.json";
 	const scores: string = "/scores.json";
+	const featureTree: string = "/feat_tree.json";
+
+	// Dimensions
 	const TREE_WIDTH = 200;
 	const LABEL_WIDTH = 50;
 
@@ -45,6 +50,7 @@
 	// load data
 	$effect(() => {
 		loadTreeData(tree).then((data) => (treeData = data));
+		loadTreeData(featureTree).then((data) => (featTreeData = data));
 		loadHeatmapData(scores).then((raw) => {
 			rawHeatmapData = raw;
 			heatmapData = loadHeatmap(raw);
@@ -92,11 +98,19 @@
 	let rowOrder = $derived((): string[] => {
 		return treeData ? getLeafOrder(treeData) : [];
 	});
-	let colOrder = $derived(() => (heatmapData ? heatmapData.cols : []));
+	// let colOrder = $derived((): string[] => (heatmapData ? heatmapData.cols : []));
+	let colOrder = $derived((): string[] => {
+		return featTreeData ? getLeafOrder(featTreeData) : [];
+	});
 
 	const cellH = $derived(() => {
 		const rows = (rowOrder() as string[]).length;
 		return rows ? heatmapHeight / rows : 0;
+	});
+
+	const cellW = $derived(() => {
+		const cols = (colOrder() as string[]).length;
+		return cols ? heatmapWidth / cols : 0;
 	});
 	// onMount(async () => {
 	// 	treeData = await loadTreeData(tree);
@@ -122,6 +136,28 @@
 		onclick={reset}>Reset</button
 	>
 </div>
+
+{#if featTreeData}
+	<div style="padding-left: {TREE_WIDTH}px; padding-right: {LABEL_WIDTH}px;">
+		<DendrogramCanvas
+			treeData={featTreeData}
+			height={200}
+			width={heatmapWidth}
+			orientation="top"
+		/>
+	</div>
+{/if}
+
+{#if colOrder()}
+	<div style="padding-left: {TREE_WIDTH}; padding-right: {LABEL_WIDTH}">
+		<ColumnLabels
+			colOrder={colOrder()}
+			height={40}
+			width={heatmapWidth}
+			cellWidth={cellW()}
+		></ColumnLabels>
+	</div>
+{/if}
 
 <div class="basic-clustermap flex overflow-hidden" bind:this={contentE1}>
 	{#if treeData}
