@@ -64,9 +64,9 @@
 				? (height * scale) / leafCount
 				: (width * scale) / leafCount;
 
-		// const leafSpacing =
-		// 	orientation === "left" ? height * scale : width * scale;
-		const leafSpacing = cellSize * (leafCount - 1);
+		const leafSpacing =
+			orientation === "left" ? height * scale : width * scale;
+		// const leafSpacing = cellSize * (leafCount - 1);
 		const branchLen = orientation === "left" ? width : height;
 
 		layout.size([leafSpacing, branchLen]);

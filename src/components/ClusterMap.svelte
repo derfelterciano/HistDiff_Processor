@@ -75,6 +75,22 @@
 	});
 
 	// bound effect
+	// const contentW = $derived(() => {
+	// 	return (TREE_WIDTH + LABEL_WIDTH + heatmapWidth) * $panZoom.scale;
+	// });
+	// const contentH = $derived(() => {
+	// 	return Math.max(treeHeight, heatmapHeight) * $panZoom.scale;
+	// });
+	//
+	// $effect(() => {
+	// 	panZoom.setMinScale(1);
+	// 	const id = setTimeout(() => {
+	// 		panZoom.setBounds(heatmapWidth, contentH(), contentW(), contentH());
+	// 	}, 0);
+	//
+	// 	return () => clearTimeout(id);
+	// });
+
 	$effect(() => {
 		const contentW = TREE_WIDTH + LABEL_WIDTH + heatmapWidth;
 		const contentH = Math.max(treeHeight, heatmapHeight);
@@ -149,10 +165,10 @@
 {/if}
 
 {#if colOrder()}
-	<div style="padding-left: {TREE_WIDTH}; padding-right: {LABEL_WIDTH}">
+	<div style="padding-left: {TREE_WIDTH}px; padding-right: {LABEL_WIDTH}px;">
 		<ColumnLabels
 			colOrder={colOrder()}
-			height={40}
+			height={100}
 			width={heatmapWidth}
 			cellWidth={cellW()}
 		></ColumnLabels>

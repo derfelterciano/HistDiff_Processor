@@ -17,16 +17,16 @@
 	style="width: {width}px; height: {height}px; "
 >
 	<div
-		class="absolute top-0 left-0 flex items-end"
+		class="absolute top-0 left-0 flex items-start h-full"
 		style="transform: translateX({$panZoom.tx}px);"
 		bind:this={labelDiv}
 	>
 		{#each colOrder as name}
 			<div
-				class="text-white text-xs text-center whitespace-nowrape"
+				class="text-white text-[10px] text-center whitespace-nowrap h-full"
 				style="
-					width: {cellWidth * $panZoom.scale}px;
-					transform: rotate(-60deg) translateY(4px); 
+					width: {Math.max(cellWidth * $panZoom.scale, 0)}px;
+					transform: rotate(-90deg) translate(-10px, 10px); 
 					transform-origin: bottom left;
 					"
 			>
