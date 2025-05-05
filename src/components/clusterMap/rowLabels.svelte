@@ -21,7 +21,7 @@
 </script>
 
 <div
-	class="overflow-hidden relative"
+	class="overflow-clip relative"
 	style="width: {width}px; height: {height}px;"
 >
 	<div class="absolute top-0 left-0" bind:this={labelDiv}>

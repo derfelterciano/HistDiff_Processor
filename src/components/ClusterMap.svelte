@@ -159,7 +159,7 @@
 				rowOrder={rowOrder() as string[]}
 				cellHeight={cellH()}
 				width={labelW}
-				height={heatmapHeight}
+				height={treeHeight}
 			/>
 		</div>
 	{/if}
