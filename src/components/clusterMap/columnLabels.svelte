@@ -17,7 +17,7 @@
 	style="width: {width}px; height: {height}px; "
 >
 	<div
-		class="absolute top-0 left-0 flex items-start h-full"
+		class="absolute top-0 left-0 flex items-start h-full overflow-y-auto"
 		style="transform: translateX({$panZoom.tx}px);"
 		bind:this={labelDiv}
 	>
@@ -25,7 +25,7 @@
 			<div
 				class="text-white text-[10px] text-center whitespace-nowrap h-full"
 				style="
-					width: {Math.max(cellWidth * $panZoom.scale, 0)}px;
+					width: {Math.max(cellWidth * $panZoom.scale, 1)}px;
 					transform: rotate(-90deg) translate(-10px, 10px); 
 					transform-origin: bottom left;
 					"

@@ -92,6 +92,28 @@ function createPanZoomStore() {
 			}),
 
 		set,
+
+		zoomAt: (factor: number, cx: number, cy: number) =>
+			update((s) => {
+				const newScale = Math.min(
+					s.maxScale,
+					Math.max(s.minScale, s.scale * factor),
+				);
+				const actual = newScale / s.scale;
+
+				// move towards cx, cy
+				let tx = cx - actual * (cx - s.tx);
+				let ty = cy - actual * (cy - s.ty);
+
+				// clamp to bounds
+				const minTx = Math.min(0, s.viewW - s.contentW * newScale);
+				tx = Math.min(0, Math.max(minTx, tx));
+
+				const minTy = Math.min(0, s.viewH - s.contentH * newScale);
+				ty = Math.min(0, Math.max(minTy, ty));
+
+				return { ...s, scale: newScale, tx, ty };
+			}),
 	};
 }
 

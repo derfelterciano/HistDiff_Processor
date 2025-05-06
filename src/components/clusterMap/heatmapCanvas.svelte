@@ -147,6 +147,28 @@
 			window.removeEventListener("mouseup", up);
 		};
 	});
+
+	// Mouse wheel zoom
+	$effect(() => {
+		if (!canvas) return;
+
+		const onWheel = (e: WheelEvent) => {
+			e.preventDefault();
+
+			const factor = e.deltaY < 0 ? 1.1 : 0.9;
+			const rect = canvas?.getBoundingClientRect();
+
+			const cx = e.clientX - (rect?.left as number);
+			const cy = e.clientY - (rect?.top as number);
+
+			panZoom.zoomAt(factor, cx, cy);
+		};
+
+		canvas.addEventListener("wheel", onWheel, { passive: false });
+		return () => {
+			canvas?.removeEventListener("wheel", onWheel);
+		};
+	});
 </script>
 
 <canvas

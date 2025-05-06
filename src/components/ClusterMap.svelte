@@ -30,7 +30,8 @@
 	const featureTree: string = "/feat_tree.json";
 
 	// Dimensions
-	const TREE_WIDTH = 200;
+	const TREE_WIDTH = 100;
+	const TOP_TREE_HEIGHT = 100;
 	const LABEL_WIDTH = 50;
 
 	// panel dimensions
@@ -46,6 +47,7 @@
 	// headers
 	let controlsE1 = $state<HTMLElement>();
 	let contentE1 = $state<HTMLDivElement>();
+	let topContentE1 = $state<HTMLDivElement>();
 
 	// load data
 	$effect(() => {
@@ -61,7 +63,9 @@
 	$effect(() => {
 		const onR = () => {
 			// treeHeight = window.innerHeight;
-			const headerH = controlsE1?.clientHeight ?? 0;
+			const headerH =
+				(controlsE1?.clientHeight ?? 0) +
+				(topContentE1?.clientHeight ?? 0);
 			const availH = containerHeight - headerH;
 
 			treeHeight = availH;
@@ -157,27 +161,33 @@
 	>
 </div>
 
-{#if featTreeData}
-	<div style="padding-left: {TREE_WIDTH}px; padding-right: {LABEL_WIDTH}px;">
-		<DendrogramCanvas
-			treeData={featTreeData}
-			height={200}
-			width={heatmapWidth}
-			orientation="top"
-		/>
-	</div>
-{/if}
+<div class="top-cluster" bind:this={topContentE1}>
+	{#if featTreeData}
+		<div
+			style="padding-left: {TREE_WIDTH}px; padding-right: {LABEL_WIDTH}px;"
+		>
+			<DendrogramCanvas
+				treeData={featTreeData}
+				height={TOP_TREE_HEIGHT}
+				width={heatmapWidth}
+				orientation="top"
+			/>
+		</div>
+	{/if}
 
-{#if colOrder()}
-	<div style="padding-left: {TREE_WIDTH}px; padding-right: {LABEL_WIDTH}px;">
-		<ColumnLabels
-			colOrder={colOrder()}
-			height={100}
-			width={heatmapWidth}
-			cellWidth={cellW()}
-		></ColumnLabels>
-	</div>
-{/if}
+	{#if colOrder()}
+		<div
+			style="padding-left: {TREE_WIDTH}px; padding-right: {LABEL_WIDTH}px;"
+		>
+			<ColumnLabels
+				colOrder={colOrder()}
+				height={80}
+				width={heatmapWidth}
+				cellWidth={cellW()}
+			></ColumnLabels>
+		</div>
+	{/if}
+</div>
 
 <div class="basic-clustermap flex overflow-hidden" bind:this={contentE1}>
 	{#if treeData}

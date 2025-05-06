@@ -19,12 +19,12 @@
 	});
 </script>
 
-<main class="overflow-hidden">
+<div class="overflow-hidden">
 	<div bind:this={headerE1} class="header">
 		<h1 class="text-3xl">Analysis</h1>
 	</div>
 
-	<div bind:this={containerE1} class="h-full h-screen flex flex-col">
+	<div bind:this={containerE1} class="overflow-hidden h-full flex flex-col">
 		<ClusterMap containerHeight={availH} />
 	</div>
-</main>
+</div>
