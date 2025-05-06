@@ -92,11 +92,15 @@
 	// });
 
 	$effect(() => {
-		const contentW = TREE_WIDTH + LABEL_WIDTH + heatmapWidth;
+		const viewW = contentE1?.clientWidth;
+		const viewH = contentE1?.clientHeight;
+
+		const contentW = heatmapWidth;
 		const contentH = Math.max(treeHeight, heatmapHeight);
 
 		panZoom.setMinScale(1);
 		panZoom.setBounds(heatmapWidth, contentH, contentW, contentH);
+		// panZoom.setBounds(contentW, contentH, viewW as number, viewH as number);
 	});
 
 	// WARNING: Temporary zoom controls
