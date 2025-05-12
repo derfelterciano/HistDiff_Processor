@@ -79,68 +79,6 @@ pub fn cluster_hd(
     });
 
     return Ok(());
-    // if let Some(res) = hd {
-    //     let mut data = res.dataframe_scores?;
-    //
-    //     let id_col = grab_col_idx_as_str(&data, 0).unwrap();
-    //
-    //     let cluster = create_hierarchy_from_df(&data, mat_metric, linkage, &Some(vec![0])).unwrap();
-    //
-    //     let d3 = convert_to_d3(&cluster, &id_col);
-    //     log::warn!("{}", d3.to_json());
-    //     log::warn!("{:?}", cluster.leaf_ordering());
-    //
-    //     if features {
-    //         // get rid of id column
-    //         let id_col_name = &data.get_column_names()[0];
-    //         let mut data_no_id = data.drop(&id_col_name).unwrap();
-    //
-    //         // let feature_names = data
-    //         //     .get_column_names()
-    //         //     .iter()
-    //         //     .enumerate()
-    //         //     .filter(|&(idx, _)| idx != 0)
-    //         //     .map(|(_, n)| n.to_string())
-    //         //     .collect::<Vec<_>>();
-    //
-    //         // rename columns to id col names (for debugging purposes)
-    //         let id_series = data.column(id_col_name).unwrap().as_series().unwrap();
-    //         let id_col_names: Vec<String> = id_series.iter().map(|s| s.to_string()).collect();
-    //
-    //         // we need to do idx - 1 b/c we got rid of the first row
-    //         let feature_map: HashMap<usize, String> = data
-    //             .get_column_names()
-    //             .iter()
-    //             .enumerate()
-    //             .filter(|&(idx, _)| idx != 0)
-    //             .map(|(idx, name)| (idx - 1, name.to_string()))
-    //             .collect();
-    //
-    //         let transposed_data = data_no_id
-    //             .transpose(None, Some(rayon::iter::Either::Right(id_col_names)))
-    //             .unwrap();
-    //
-    //         let cluster_features =
-    //             create_hierarchy_from_df(&transposed_data, mat_metric, linkage, &None).unwrap();
-    //
-    //         let d3_features = convert_to_d3(&cluster_features, &feature_map);
-    //         // let feat_col = Column::new("features".into(), feature_names);
-    //         // _ = transposed_data.insert_column(0, feat_col).unwrap();
-    //
-    //         // log::info!("ORIGINAL: {}", data);
-    //         // log::info!("{}", transposed_data);
-    //
-    //         log::warn!("{}", d3_features.to_json());
-    //     }
-    //
-    //     // WARN: Remove below utility lines
-    //     // _ = write_raw_scores_json("./scores.json", &res.raw_scores);
-    //     // _ = d3.write_json("./tree.json");
-    //
-    //     return Some(d3.to_json());
-    // } else {
-    //     return None;
-    // }
 }
 
 /// Helper function to write scores to json
