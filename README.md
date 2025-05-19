@@ -68,17 +68,18 @@ at your computer any where!
       - [x] Fit entire heatmap onto entire canvas
       - [x] Fix dendrogram trees so it has highest quality
       - [x] Add zoom in and out button
-      - [ ] fix canvas so it sits nicely in window
+      - [x] fix canvas so it sits nicely in window
       - [ ] add tool tips hover so uses can see cell info
-    - [ ] Implement dendrograms
+    - [x] Implement dendrograms
       - [x] Left dendrogram
-      - [ ] Right dendrogram
+      - [x] Right dendrogram
     - Use new clustering library
     - [ ] Integrate clustering library to app's rust library
       - [x] Convert json tree into D3 compliant json tree
       - [x] Implement dendrogram
-      - [ ] Create ability to safely transpose dataframes so both rows and cols are clustered
+      - [x] Create ability to safely transpose dataframes so both rows and cols are clustered
         - [ ] This needs to be an option if users want to see features clustered
+    - [ ] Implement backend aspect of the heatmap
   - [ ] Implement Score distribution
   - [ ] Implement positive control score distribution
 

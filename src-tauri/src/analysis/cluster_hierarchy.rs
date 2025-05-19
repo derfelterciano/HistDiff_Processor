@@ -10,7 +10,7 @@ use rayon::ThreadPoolBuilder;
 use serde::Serialize;
 use tauri::AppHandle;
 
-use crate::hd_interface::retrieve_state;
+use crate::{analysis::ClusterRes, hd_interface::retrieve_state};
 
 #[tauri::command]
 pub fn cluster_hd(
@@ -43,6 +43,7 @@ pub fn cluster_hd(
 
             log::warn!("{}", row_d3.to_json());
 
+            let mut feat_clust: Option<String> = None;
             if features {
                 // get rid of if col
                 let id_col_name = &data.get_column_names()[0];
@@ -69,12 +70,15 @@ pub fn cluster_hd(
                     create_hierarchy_from_df(&data_t, mat_metric, linkage, &None).unwrap();
 
                 let d3_features = convert_to_d3(&cluster_features, &feature_map);
+                feat_clust = Some(d3_features.to_json());
 
                 //WARNING: Remove utility lines
                 _ = d3_features.write_json("./feat_tree.json");
 
                 log::warn!("{}", d3_features.to_json());
             }
+
+            let clust_res = ClusterRes::new(Some(row_d3.to_json()), feat_clust);
         });
     });
 

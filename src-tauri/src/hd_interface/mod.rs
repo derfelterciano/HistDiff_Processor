@@ -30,3 +30,7 @@ pub struct ControlSelection {
 pub struct HistDiffState {
     pub hd_res: Mutex<Option<HistDiffRes>>,
 }
+
+pub struct ClusterState {
+    pub cluster_res: Mutex<Option<String>>,
+}
