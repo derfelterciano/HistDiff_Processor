@@ -79,7 +79,9 @@ at your computer any where!
       - [x] Implement dendrogram
       - [x] Create ability to safely transpose dataframes so both rows and cols are clustered
         - [ ] This needs to be an option if users want to see features clustered
-    - [ ] Implement backend aspect of the heatmap
+      - [ ] Parse backend output for svelte to use
+    - [x] Implement backend aspect of the heatmap
+      - API has been implemented, dev can now call get_cluster_res to grab d3 results
   - [ ] Implement Score distribution
   - [ ] Implement positive control score distribution
 
