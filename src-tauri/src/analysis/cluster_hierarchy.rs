@@ -41,7 +41,7 @@ pub fn cluster_hd(
             // _ = write_raw_scores_json("./scores.json", &res.raw_scores);
             // _ = row_d3.write_json("./row_tree.json");
 
-            log::warn!("{}", row_d3.to_json());
+            // log::warn!("{}", row_d3.to_json());
 
             let mut feat_clust: Option<String> = None;
             if features {
@@ -75,7 +75,7 @@ pub fn cluster_hd(
                 //WARNING: Remove utility lines
                 // _ = d3_features.write_json("./feat_tree.json");
 
-                log::warn!("{}", d3_features.to_json());
+                // log::warn!("{}", d3_features.to_json());
             }
 
             let clust_res = ClusterRes::new(Some(row_d3.to_json()), feat_clust);
@@ -93,6 +93,10 @@ pub fn cluster_hd(
 #[tauri::command]
 pub fn get_cluster_res(state: State<'_, ClusterState>) -> Option<ClusterRes> {
     let res = state.cluster_res.lock().unwrap().clone();
+    // if let Some(ref clust) = res {
+    //     let dbg_str = serde_json::to_string(&clust).unwrap();
+    //     log::warn!("{}", dbg_str);
+    // }
     return res;
 }
 
