@@ -8,9 +8,9 @@ use histdiff_core::HistDiffRes;
 use polars::prelude::*;
 use rayon::ThreadPoolBuilder;
 use serde::Serialize;
-use tauri::AppHandle;
+use tauri::{AppHandle, Emitter, Manager, State};
 
-use crate::{analysis::ClusterRes, hd_interface::retrieve_state};
+use crate::{analysis::ClusterRes, hd_interface::retrieve_state, ClusterState};
 
 #[tauri::command]
 pub fn cluster_hd(
@@ -38,8 +38,8 @@ pub fn cluster_hd(
             let row_d3 = convert_to_d3(&cluster, &id_col);
 
             // WARNING: Remove utility lines
-            _ = write_raw_scores_json("./scores.json", &res.raw_scores);
-            _ = row_d3.write_json("./row_tree.json");
+            // _ = write_raw_scores_json("./scores.json", &res.raw_scores);
+            // _ = row_d3.write_json("./row_tree.json");
 
             log::warn!("{}", row_d3.to_json());
 
@@ -73,16 +73,27 @@ pub fn cluster_hd(
                 feat_clust = Some(d3_features.to_json());
 
                 //WARNING: Remove utility lines
-                _ = d3_features.write_json("./feat_tree.json");
+                // _ = d3_features.write_json("./feat_tree.json");
 
                 log::warn!("{}", d3_features.to_json());
             }
 
             let clust_res = ClusterRes::new(Some(row_d3.to_json()), feat_clust);
+            let state = app.state::<ClusterState>();
+            let mut guard = state.cluster_res.lock().unwrap();
+            *guard = Some(clust_res);
+
+            _ = app.emit("cluster-complete", ());
         });
     });
 
     return Ok(());
+}
+
+#[tauri::command]
+pub fn get_cluster_res(state: State<'_, ClusterState>) -> Option<ClusterRes> {
+    let res = state.cluster_res.lock().unwrap().clone();
+    return res;
 }
 
 /// Helper function to write scores to json

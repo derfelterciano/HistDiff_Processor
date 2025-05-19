@@ -3,8 +3,8 @@ mod analysis;
 mod hd_interface;
 mod tauri_components;
 
-use analysis::cluster_hd;
-use hd_interface::{process_hd, write_res, HistDiffState};
+use analysis::{cluster_hd, get_cluster_res};
+use hd_interface::{process_hd, write_res, ClusterState, HistDiffState};
 use histdiff_core::*;
 use std::sync::Arc;
 use tauri::Manager;
@@ -28,6 +28,7 @@ pub fn run() {
             init_logger(app.handle().clone()).expect("Failed to initialize logger");
 
             app.manage(HistDiffState::new());
+            app.manage(ClusterState::new());
             return Ok(());
         })
         .invoke_handler(tauri::generate_handler![
@@ -40,7 +41,8 @@ pub fn run() {
             write_res,
             terminal,
             open_analysis,
-            cluster_hd
+            cluster_hd,
+            get_cluster_res
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

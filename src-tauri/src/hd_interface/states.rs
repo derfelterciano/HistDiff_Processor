@@ -9,3 +9,13 @@ impl HistDiffState {
         };
     }
 }
+
+use super::ClusterState;
+
+impl ClusterState {
+    pub fn new() -> Self {
+        return Self {
+            cluster_res: Mutex::new(None),
+        };
+    }
+}

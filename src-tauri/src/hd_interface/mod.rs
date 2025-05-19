@@ -11,6 +11,8 @@ pub use states::*;
 pub use utils::retrieve_state;
 use utils::*;
 
+use crate::analysis::ClusterRes;
+
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SvelteConfig {
     pub dataset_path: String,
@@ -32,5 +34,5 @@ pub struct HistDiffState {
 }
 
 pub struct ClusterState {
-    pub cluster_res: Mutex<Option<String>>,
+    pub cluster_res: Mutex<Option<ClusterRes>>,
 }

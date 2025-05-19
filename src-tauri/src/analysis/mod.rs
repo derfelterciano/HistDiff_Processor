@@ -4,11 +4,11 @@ use serde::{Deserialize, Serialize};
 use std::io::Result;
 use std::{fs::File, path::Path};
 
-pub use cluster_hierarchy::cluster_hd;
+pub use cluster_hierarchy::{cluster_hd, get_cluster_res};
 use node_utilities::*;
 use serde_json;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct ClusterRes {
     pub row_cluster: Option<String>,
     pub col_cluster: Option<String>,
