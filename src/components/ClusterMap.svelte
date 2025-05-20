@@ -143,22 +143,36 @@
 	// });
 </script>
 
-<div class="controls" bind:this={controlsE1}>
-	<button
-		class="bg-red-500 hover:bg-red-400 p-1 border-1 rounded"
-		type="button"
-		onclick={zoomIn}>Zoom In</button
-	>
-	<button
-		class="bg-red-500 hover:bg-red-400 p-1 border-1 rounded"
-		type="button"
-		onclick={zoomOut}>Zoom Out</button
-	>
-	<button
-		class="bg-red-500 hover:bg-red-400 p-1 border-1 rounded"
-		type="button"
-		onclick={reset}>Reset</button
-	>
+<div
+	class="controls flex items-center justify-between px-2 py-1"
+	bind:this={controlsE1}
+>
+	<div class="flex-none">
+		<button
+			class="bg-blue-400 hover:bg-blue-300 p-1 border-1 rounded"
+			type="button">Load Data</button
+		>
+	</div>
+	<div class="flex flex-none space-x-2">
+		<button
+			class="bg-red-500 hover:bg-red-400 p-1 border-1 rounded"
+			type="button"
+			onclick={zoomIn}>Zoom In</button
+		>
+		<button
+			class="bg-red-500 hover:bg-red-400 p-1 border-1 rounded"
+			type="button"
+			onclick={zoomOut}>Zoom Out</button
+		>
+		<button
+			class="bg-red-500 hover:bg-red-400 p-1 border-1 rounded"
+			type="button"
+			onclick={reset}>Reset</button
+		>
+	</div>
+	<div class="flex-none">
+		<!-- Future buttons go here -->
+	</div>
 </div>
 
 <div class="top-cluster" bind:this={topContentE1}>

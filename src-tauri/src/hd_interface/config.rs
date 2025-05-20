@@ -2,7 +2,7 @@ use histdiff_core::{calculate_scores, HistDiffRes, UserConfig};
 use log::{self, error};
 use rayon::ThreadPoolBuilder;
 use serde_json::Value;
-use std::sync::Arc;
+use std::{collections::HashMap, error::Error, sync::Arc};
 use tauri::{Emitter, Manager, State};
 
 use super::{clean_well_names, HistDiffState, SvelteConfig};
@@ -54,6 +54,23 @@ fn svelte_to_hd_config(config: SvelteConfig) -> UserConfig {
     let ref_cntrls = clean_well_names(&config.negative_control.wells);
 
     return UserConfig::new(path, id, useless_meta, true, None, None, ref_cntrls, None);
+}
+
+#[tauri::command]
+pub fn get_hd_scores(
+    state: State<'_, HistDiffState>,
+) -> Option<HashMap<String, HashMap<String, f64>>> {
+    let guard = state.hd_res.lock().unwrap();
+
+    match &*guard {
+        Some(res) => {
+            return Some(res.raw_scores.clone());
+        }
+        None => {
+            log::error!("Can't retrieve json scores");
+            return None;
+        }
+    }
 }
 
 #[tauri::command]
