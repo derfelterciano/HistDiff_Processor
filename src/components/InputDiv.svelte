@@ -58,27 +58,27 @@
 			isProcessing = false;
 			saveReady = true;
 			// invoke("open_analysis");
-			invoke("cluster_hd", {
-				matMetric: "Pearson",
-				linkage: "Complete",
-				features: true,
-			});
+			// invoke("cluster_hd", {
+			// 	matMetric: "Pearson",
+			// 	linkage: "Complete",
+			// 	features: true,
+			// });
 		});
 
 		// WARN: Remove clustering scaffold
-		clusterUnlisten = await listen("cluster-complete", async () => {
-			await invoke("terminal", { msg: "clustering complete!" });
-			const msg = await invoke<any | null>("get_cluster_res");
-			if (msg && msg.row_cluster) {
-				invoke("terminal", { msg: "Retrieving clusters." });
-				invoke("terminal", { msg: msg.row_cluster });
-			}
-		});
+		// clusterUnlisten = await listen("cluster-complete", async () => {
+		// 	await invoke("terminal", { msg: "clustering complete!" });
+		// 	const msg = await invoke<any | null>("get_cluster_res");
+		// 	if (msg && msg.row_cluster) {
+		// 		invoke("terminal", { msg: "Retrieving clusters." });
+		// 		invoke("terminal", { msg: msg.row_cluster });
+		// 	}
+		// });
 	});
 
 	onDestroy(() => {
 		if (unlisten) unlisten();
-		if (clusterUnlisten) clusterUnlisten();
+		// if (clusterUnlisten) clusterUnlisten();
 	});
 
 	const openLogs = async (): Promise<void> => {

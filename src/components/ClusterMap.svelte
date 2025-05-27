@@ -156,20 +156,40 @@
 				return;
 			}
 			heatmapData = loadHeatmap(rawScores);
-			await invoke("cluster_hd", {
+			let res = await invoke<ClusterRes | null>("get_cluster_res");
+			if (!res) {
+				infoMsg = "ClusterData has not been calculated yet! Calculating data now!"
+				await invoke("terminal", {msg: infoMsg});
+				await invoke("cluster_hd", {
 				matMetric: "Pearson",
 				linkage: "Complete",
 				features: true,
-			});
-			const res = await invoke<ClusterRes | null>("get_cluster_res");
+				});
+				
+				let tries = 0;
+				const maxTries = 50;
+				while (tries < maxTries) {
+					await new Promise(r => setTimeout(r, 200));
+					res = await invoke<ClusterRes | null>("get_cluster_res");
+					if (res) break;
+					tries++;
+				}
+				// res = await invoke<ClusterRes | null>("get_cluster_res");
+
+			} 
+
 			if (!res) {
-				infoMsg = "ClusterData has not been calculated yet! Please run HistDiff first."
+				infoMsg = "ClusterData has not been calculated yet! Please run HistDiff first!";
 				await invoke("terminal", {msg: infoMsg});
 				return;
 			}
+
 			treeData = res.row_cluster;
 			featTreeData = res.col_cluster;
-
+			
+			if (treeData && featTreeData && heatmapData){
+				await invoke("terminal", {msg: "Got Data!"});
+			}
 
 		} catch (err) {
 			infoMsg = "Error loading cluster data";
