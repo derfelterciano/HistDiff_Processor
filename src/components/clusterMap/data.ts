@@ -7,6 +7,11 @@ export interface HeatmapData {
 	cells: { row: string; col: string; value: number }[];
 }
 
+export interface ClusterRes {
+	row_cluster: D3Node | null;
+	col_cluster: D3Node | null;
+}
+
 /**JSON fetcher (not for production)**/
 export async function fetchJSON<T>(path: string): Promise<T> {
 	const response = await fetch(path);

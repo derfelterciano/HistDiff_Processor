@@ -6,16 +6,19 @@
 		loadTreeData,
 		loadHeatmapData,
 		type HeatmapData,
+		type ClusterRes,
 		loadHeatmap,
 	} from "./clusterMap/data";
 	import HeatmapCanvas from "./clusterMap/heatmapCanvas.svelte";
 	import { getLeafOrder } from "./clusterMap/utils";
 	import RowLabels from "./clusterMap/rowLabels.svelte";
 	import ColumnLabels from "./clusterMap/columnLabels.svelte";
+	import { invoke } from "@tauri-apps/api/core";
 
 	const { containerHeight } = $props<{ containerHeight: number }>();
 
 	// let containerHeight = $state<number>(window.innerHeight);
+	let infoMsg = $state<string | null>(null);
 
 	let treeData = $state<D3Node | null>(null);
 	let featTreeData = $state<D3Node | null>(null);
@@ -50,14 +53,14 @@
 	let topContentE1 = $state<HTMLDivElement>();
 
 	// load data
-	$effect(() => {
-		loadTreeData(tree).then((data) => (treeData = data));
-		loadTreeData(featureTree).then((data) => (featTreeData = data));
-		loadHeatmapData(scores).then((raw) => {
-			rawHeatmapData = raw;
-			heatmapData = loadHeatmap(raw);
-		});
-	});
+	// $effect(() => {
+	// 	loadTreeData(tree).then((data) => (treeData = data));
+	// 	loadTreeData(featureTree).then((data) => (featTreeData = data));
+	// 	loadHeatmapData(scores).then((raw) => {
+	// 		rawHeatmapData = raw;
+	// 		heatmapData = loadHeatmap(raw);
+	// 	});
+	// });
 
 	// recalculate dimensions
 	$effect(() => {
@@ -141,6 +144,39 @@
 	// 	rawHeatmapData = await loadHeatmapData(scores);
 	// 	heatmapData = loadHeatmap(rawHeatmapData);
 	// });
+
+	async function loadClusterData() {
+		infoMsg = null;
+		try {
+			const rawScores = await invoke<Record<string, Record<string, number>> | null>("get_hd_scores");
+			if (!rawScores) {
+				infoMsg = "HeatMapData has not been calculated yet! Please run HistDiff first."
+				await invoke("terminal", {msg: infoMsg});
+				heatmapData = null;
+				return;
+			}
+			heatmapData = loadHeatmap(rawScores);
+			await invoke("cluster_hd", {
+				matMetric: "Pearson",
+				linkage: "Complete",
+				features: true,
+			});
+			const res = await invoke<ClusterRes | null>("get_cluster_res");
+			if (!res) {
+				infoMsg = "ClusterData has not been calculated yet! Please run HistDiff first."
+				await invoke("terminal", {msg: infoMsg});
+				return;
+			}
+			treeData = res.row_cluster;
+			featTreeData = res.col_cluster;
+
+
+		} catch (err) {
+			infoMsg = "Error loading cluster data";
+			await invoke("terminal", {msg: infoMsg});
+		}
+
+	}
 </script>
 
 <div
@@ -150,7 +186,8 @@
 	<div class="flex-none">
 		<button
 			class="bg-blue-400 hover:bg-blue-300 p-1 border-1 rounded"
-			type="button">Load Data</button
+			type="button"
+			onclick={loadClusterData}>Load Data</button
 		>
 	</div>
 	<div class="flex flex-none space-x-2">
