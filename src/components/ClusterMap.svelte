@@ -7,6 +7,7 @@
 		loadHeatmapData,
 		type HeatmapData,
 		type ClusterRes,
+		jsonParser,
 		loadHeatmap,
 	} from "./clusterMap/data";
 	import HeatmapCanvas from "./clusterMap/heatmapCanvas.svelte";
@@ -14,11 +15,15 @@
 	import RowLabels from "./clusterMap/rowLabels.svelte";
 	import ColumnLabels from "./clusterMap/columnLabels.svelte";
 	import { invoke } from "@tauri-apps/api/core";
+  	import { listen } from "@tauri-apps/api/event";
+  import { onDestroy } from "svelte";
 
 	const { containerHeight } = $props<{ containerHeight: number }>();
 
 	// let containerHeight = $state<number>(window.innerHeight);
 	let infoMsg = $state<string | null>(null);
+	let clusterCompleteUnlisten: (() => void) | null = null;
+	let waitingForCluster = $state<boolean>(false);
 
 	let treeData = $state<D3Node | null>(null);
 	let featTreeData = $state<D3Node | null>(null);
@@ -146,49 +151,65 @@
 	// });
 
 	async function loadClusterData() {
+		if (waitingForCluster) return;
 		infoMsg = null;
 		try {
-			const rawScores = await invoke<Record<string, Record<string, number>> | null>("get_hd_scores");
+			let rawScores = await invoke<Record<string, Record<string, number>> | null>("get_hd_scores");
+			rawScores = jsonParser<Record<string, Record<string, number>>>(rawScores);
 			if (!rawScores) {
 				infoMsg = "HeatMapData has not been calculated yet! Please run HistDiff first."
 				await invoke("terminal", {msg: infoMsg});
 				heatmapData = null;
 				return;
 			}
+			rawHeatmapData = rawScores;
 			heatmapData = loadHeatmap(rawScores);
+
 			let res = await invoke<ClusterRes | null>("get_cluster_res");
+			res = jsonParser<ClusterRes>(res);
 			if (!res) {
 				infoMsg = "ClusterData has not been calculated yet! Calculating data now!"
 				await invoke("terminal", {msg: infoMsg});
+				waitingForCluster = true;
+
+				if (!clusterCompleteUnlisten) {
+					clusterCompleteUnlisten = await listen("cluster-complete", async () => {
+						waitingForCluster = false;
+						infoMsg = "Clustering complete! Loading tree data...";
+						await invoke("terminal", {msg: infoMsg});
+						// Now fetch cluster results
+						let finishedRes = await invoke<ClusterRes | null>("get_cluster_res");
+						finishedRes = jsonParser<ClusterRes>(finishedRes);
+						if (finishedRes) {
+							treeData = jsonParser<D3Node>(finishedRes.row_cluster);
+							featTreeData = jsonParser<D3Node>(finishedRes.col_cluster);
+							await invoke("terminal", {msg: "Got Tree Data!"});
+						} else {
+							infoMsg = "Cluster results still not found after completion!";
+							await invoke("terminal", {msg: infoMsg});
+						}
+					});
+				}
+
 				await invoke("cluster_hd", {
 				matMetric: "Pearson",
 				linkage: "Complete",
 				features: true,
 				});
-				
-				let tries = 0;
-				const maxTries = 50;
-				while (tries < maxTries) {
-					await new Promise(r => setTimeout(r, 200));
-					res = await invoke<ClusterRes | null>("get_cluster_res");
-					if (res) break;
-					tries++;
-				}
+
+				return;
+
 				// res = await invoke<ClusterRes | null>("get_cluster_res");
 
 			} 
 
-			if (!res) {
-				infoMsg = "ClusterData has not been calculated yet! Please run HistDiff first!";
-				await invoke("terminal", {msg: infoMsg});
-				return;
-			}
-
-			treeData = res.row_cluster;
-			featTreeData = res.col_cluster;
+			treeData = jsonParser<D3Node>(res.row_cluster);
+			featTreeData = jsonParser<D3Node>(res.col_cluster);
 			
 			if (treeData && featTreeData && heatmapData){
 				await invoke("terminal", {msg: "Got Data!"});
+				console.log(res);
+				// await invoke("terminal", {msg: treeData});
 			}
 
 		} catch (err) {
@@ -197,6 +218,14 @@
 		}
 
 	}
+
+	onDestroy(() => {
+		if (clusterCompleteUnlisten) {
+			clusterCompleteUnlisten();
+			clusterCompleteUnlisten = null;
+		}
+	});
+
 </script>
 
 <div
@@ -207,7 +236,8 @@
 		<button
 			class="bg-blue-400 hover:bg-blue-300 p-1 border-1 rounded"
 			type="button"
-			onclick={loadClusterData}>Load Data</button
+			onclick={loadClusterData}
+			disabled={waitingForCluster}>Load Data</button
 		>
 	</div>
 	<div class="flex flex-none space-x-2">

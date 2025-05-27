@@ -52,3 +52,19 @@ export function computeContrast(cells: HeatmapData["cells"]) {
 	const vals = cells.map((d) => d.value);
 	return { min: d3.min(vals) ?? 0, max: d3.max(vals) ?? 1 };
 }
+
+/**Convert's rust string obj into specific types */
+export function jsonParser<T>(data: T | string | null): T | null {
+	if (data === null || data === undefined) return null;
+	if (typeof data === "string") {
+		console.log("STRING FOUND");
+		try {
+			return JSON.parse(data) as T;
+		} catch (err) {
+			console.warn("Could not parse string as JSON", err, data);
+			return null;
+		}
+	}
+
+	return data as T;
+}

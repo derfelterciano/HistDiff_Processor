@@ -49,6 +49,7 @@ at your computer any where!
           This doesn't seem like a good idea but this the only way i can think of to not
           produce a temp file~~
       - ~~[ ] Modify rust HD to accept temp file OR modify HD to take in raw DataStruct~~
+    - [ ] Clear app states when submitting
 - [x] Implement logging
   - [x] Implement logging in rust processes
   - [x] Add global emit and listening for logging
