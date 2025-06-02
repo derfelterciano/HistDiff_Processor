@@ -4,7 +4,9 @@ mod hd_interface;
 mod tauri_components;
 
 use analysis::{cluster_hd, get_cluster_res};
-use hd_interface::{get_hd_scores, process_hd, write_res, ClusterState, HistDiffState};
+use hd_interface::{
+    get_hd_scores, process_hd, reset_state, write_res, ClusterState, HistDiffState,
+};
 use histdiff_core::*;
 use std::sync::Arc;
 use tauri::Manager;
@@ -43,7 +45,8 @@ pub fn run() {
             open_analysis,
             cluster_hd,
             get_cluster_res,
-            get_hd_scores
+            get_hd_scores,
+            reset_state
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
