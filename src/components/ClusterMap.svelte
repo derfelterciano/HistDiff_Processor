@@ -15,8 +15,8 @@
 	import RowLabels from "./clusterMap/rowLabels.svelte";
 	import ColumnLabels from "./clusterMap/columnLabels.svelte";
 	import { invoke } from "@tauri-apps/api/core";
-  	import { listen } from "@tauri-apps/api/event";
-  import { onDestroy } from "svelte";
+	import { listen } from "@tauri-apps/api/event";
+	import { onDestroy } from "svelte";
 
 	const { containerHeight } = $props<{ containerHeight: number }>();
 
@@ -154,11 +154,16 @@
 		if (waitingForCluster) return;
 		infoMsg = null;
 		try {
-			let rawScores = await invoke<Record<string, Record<string, number>> | null>("get_hd_scores");
-			rawScores = jsonParser<Record<string, Record<string, number>>>(rawScores);
+			let rawScores = await invoke<Record<
+				string,
+				Record<string, number>
+			> | null>("get_hd_scores");
+			rawScores =
+				jsonParser<Record<string, Record<string, number>>>(rawScores);
 			if (!rawScores) {
-				infoMsg = "HeatMapData has not been calculated yet! Please run HistDiff first."
-				await invoke("terminal", {msg: infoMsg});
+				infoMsg =
+					"HeatMapData has not been calculated yet! Please run HistDiff first.";
+				await invoke("terminal", { msg: infoMsg });
 				heatmapData = null;
 				return;
 			}
@@ -168,55 +173,66 @@
 			let res = await invoke<ClusterRes | null>("get_cluster_res");
 			res = jsonParser<ClusterRes>(res);
 			if (!res) {
-				infoMsg = "ClusterData has not been calculated yet! Calculating data now!"
-				await invoke("terminal", {msg: infoMsg});
+				infoMsg =
+					"ClusterData has not been calculated yet! Calculating data now!";
+				await invoke("terminal", { msg: infoMsg });
 				waitingForCluster = true;
 
 				if (!clusterCompleteUnlisten) {
-					clusterCompleteUnlisten = await listen("cluster-complete", async () => {
-						waitingForCluster = false;
-						infoMsg = "Clustering complete! Loading tree data...";
-						await invoke("terminal", {msg: infoMsg});
-						// Now fetch cluster results
-						let finishedRes = await invoke<ClusterRes | null>("get_cluster_res");
-						finishedRes = jsonParser<ClusterRes>(finishedRes);
-						if (finishedRes) {
-							treeData = jsonParser<D3Node>(finishedRes.row_cluster);
-							featTreeData = jsonParser<D3Node>(finishedRes.col_cluster);
-							await invoke("terminal", {msg: "Got Tree Data!"});
-						} else {
-							infoMsg = "Cluster results still not found after completion!";
-							await invoke("terminal", {msg: infoMsg});
-						}
-					});
+					clusterCompleteUnlisten = await listen(
+						"cluster-complete",
+						async () => {
+							waitingForCluster = false;
+							infoMsg =
+								"Clustering complete! Loading tree data...";
+							await invoke("terminal", { msg: infoMsg });
+							// Now fetch cluster results
+							let finishedRes = await invoke<ClusterRes | null>(
+								"get_cluster_res",
+							);
+							finishedRes = jsonParser<ClusterRes>(finishedRes);
+							if (finishedRes) {
+								treeData = jsonParser<D3Node>(
+									finishedRes.row_cluster,
+								);
+								featTreeData = jsonParser<D3Node>(
+									finishedRes.col_cluster,
+								);
+								await invoke("terminal", {
+									msg: "Got Tree Data!",
+								});
+							} else {
+								infoMsg =
+									"Cluster results still not found after completion!";
+								await invoke("terminal", { msg: infoMsg });
+							}
+						},
+					);
 				}
 
 				await invoke("cluster_hd", {
-				matMetric: "Pearson",
-				linkage: "Complete",
-				features: true,
+					matMetric: "Pearson",
+					linkage: "Complete",
+					features: true,
 				});
 
 				return;
 
 				// res = await invoke<ClusterRes | null>("get_cluster_res");
-
-			} 
+			}
 
 			treeData = jsonParser<D3Node>(res.row_cluster);
 			featTreeData = jsonParser<D3Node>(res.col_cluster);
-			
-			if (treeData && featTreeData && heatmapData){
-				await invoke("terminal", {msg: "Got Data!"});
+
+			if (treeData && featTreeData && heatmapData) {
+				await invoke("terminal", { msg: "Got Data!" });
 				console.log(res);
 				// await invoke("terminal", {msg: treeData});
 			}
-
 		} catch (err) {
 			infoMsg = "Error loading cluster data";
-			await invoke("terminal", {msg: infoMsg});
+			await invoke("terminal", { msg: infoMsg });
 		}
-
 	}
 
 	onDestroy(() => {
@@ -225,7 +241,6 @@
 			clusterCompleteUnlisten = null;
 		}
 	});
-
 </script>
 
 <div
