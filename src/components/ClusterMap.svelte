@@ -58,14 +58,14 @@
 	let topContentE1 = $state<HTMLDivElement>();
 
 	// load data
-	// $effect(() => {
-	// 	loadTreeData(tree).then((data) => (treeData = data));
-	// 	loadTreeData(featureTree).then((data) => (featTreeData = data));
-	// 	loadHeatmapData(scores).then((raw) => {
-	// 		rawHeatmapData = raw;
-	// 		heatmapData = loadHeatmap(raw);
-	// 	});
-	// });
+	$effect(() => {
+		loadTreeData(tree).then((data) => (treeData = data));
+		loadTreeData(featureTree).then((data) => (featTreeData = data));
+		loadHeatmapData(scores).then((raw) => {
+			rawHeatmapData = raw;
+			heatmapData = loadHeatmap(raw);
+		});
+	});
 
 	// recalculate dimensions
 	$effect(() => {
