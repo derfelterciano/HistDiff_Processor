@@ -21,7 +21,7 @@
   const { containerHeight } = $props<{ containerHeight: number }>();
 
   // let containerHeight = $state<number>(window.innerHeight);
-  let infoMsg = $state<string | null>(null);
+  let infoMsg = $state<string | null>("Waiting for data!");
   let clusterCompleteUnlisten: (() => void) | null = null;
   let waitingForCluster = $state<boolean>(false);
 
@@ -58,14 +58,14 @@
   let topContentE1 = $state<HTMLDivElement>();
 
   // load data
-  $effect(() => {
-    loadTreeData(tree).then((data) => (treeData = data));
-    loadTreeData(featureTree).then((data) => (featTreeData = data));
-    loadHeatmapData(scores).then((raw) => {
-      rawHeatmapData = raw;
-      heatmapData = loadHeatmap(raw);
-    });
-  });
+  // $effect(() => {
+  //   loadTreeData(tree).then((data) => (treeData = data));
+  //   loadTreeData(featureTree).then((data) => (featTreeData = data));
+  //   loadHeatmapData(scores).then((raw) => {
+  //     rawHeatmapData = raw;
+  //     heatmapData = loadHeatmap(raw);
+  //   });
+  // });
 
   // recalculate dimensions
   $effect(() => {
@@ -151,7 +151,7 @@
 
   async function loadClusterData() {
     if (waitingForCluster) return;
-    infoMsg = null;
+    infoMsg = "waiting for data!";
     try {
       let rawScores = await invoke<Record<
         string,
@@ -304,7 +304,8 @@
       />
     </div>
   {:else}
-    <p>Loading Dendrograms...</p>
+    <!-- <p>Loading Dendrograms...</p> -->
+    <p>{infoMsg}</p>
   {/if}
 
   {#if heatmapData && rawHeatmapData && (rowOrder() as string[]).length}
@@ -321,7 +322,8 @@
       />
     </div>
   {:else if treeData}
-    <p>Loading heatmap…</p>
+    <!-- <p>Loading heatmap…</p> -->
+    <p>{infoMsg}</p>
   {/if}
 
   {#if (rowOrder() as string[]).length}
