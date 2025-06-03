@@ -70,7 +70,7 @@ at your computer any where!
       - [x] Fix dendrogram trees so it has highest quality
       - [x] Add zoom in and out button
       - [x] fix canvas so it sits nicely in window
-      - [ ] add tool tips hover so uses can see cell info
+      - [x] add tool tips hover so uses can see cell info
     - [x] Implement dendrograms
       - [x] Left dendrogram
       - [x] Right dendrogram
