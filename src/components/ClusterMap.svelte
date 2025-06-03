@@ -317,6 +317,7 @@
         colOrder={colOrder() as string[]}
         width={heatmapWidth}
         height={heatmapHeight}
+        showToolTips={true}
       />
     </div>
   {:else if treeData}

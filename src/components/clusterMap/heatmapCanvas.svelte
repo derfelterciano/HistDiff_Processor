@@ -20,7 +20,7 @@
     colOrder,
     width,
     height,
-    showToolTips = true,
+    showToolTips = false,
   }: Props = $props();
 
   // ── 2) Local canvases ─────────────────────────────────────────────────────
