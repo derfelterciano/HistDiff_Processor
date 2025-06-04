@@ -79,7 +79,7 @@ at your computer any where!
       - [x] Convert json tree into D3 compliant json tree
       - [x] Implement dendrogram
       - [x] Create ability to safely transpose dataframes so both rows and cols are clustered
-        - [ ] This needs to be an option if users want to see features clustered
+        - [x] This needs to be an option if users want to see features clustered
       - [x] Parse backend output for svelte to use
     - [x] Implement backend aspect of the heatmap
       - API has been implemented, dev can now call get_cluster_res to grab d3 results

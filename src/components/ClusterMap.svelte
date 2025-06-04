@@ -33,6 +33,10 @@
   let heatmapData = $state<HeatmapData | null>(null);
   let toolTips = $state<boolean>(true);
 
+  // Clustering options
+  let clusterRows = $state<boolean>(true);
+  let clusterCols = $state<boolean>(true);
+
   // WARNING: Test URLS
   const tree: string = "/row_tree.json";
   const scores: string = "/scores.json";
@@ -251,6 +255,24 @@
       <input type="checkbox" bind:checked={toolTips} class="accent-blue-500" />
       <span class="text-xs text-white">Show tooltips</span>
     </label>
+
+    <label class="flex items-center space-x-1 ml-2 cursor-pointer select-none">
+      <input
+        type="checkbox"
+        bind:checked={clusterCols}
+        class="accent-blue-500"
+      />
+      <span class="text-xs text-white">Cluster Features</span>
+    </label>
+
+    <label class="flex items-center space-x-1 ml-2 cursor-pointer select-none">
+      <input
+        type="checkbox"
+        bind:checked={clusterRows}
+        class="accent-blue-500"
+      />
+      <span class="text-xs text-white">Cluster Rows</span>
+    </label>
   </div>
   <div class="flex flex-none space-x-2">
     <button
@@ -275,7 +297,7 @@
 </div>
 
 <div class="top-cluster" bind:this={topContentE1}>
-  {#if featTreeData}
+  {#if featTreeData && clusterCols}
     <div style="padding-left: {TREE_WIDTH}px; padding-right: {LABEL_WIDTH}px;">
       <DendrogramCanvas
         treeData={featTreeData}
@@ -289,7 +311,11 @@
   {#if colOrder()}
     <div style="padding-left: {TREE_WIDTH}px; padding-right: {LABEL_WIDTH}px;">
       <ColumnLabels
-        colOrder={colOrder()}
+        colOrder={clusterCols
+          ? colOrder()
+          : heatmapData
+            ? heatmapData.cols
+            : []}
         height={80}
         width={heatmapWidth}
         cellWidth={cellW()}
@@ -299,7 +325,7 @@
 </div>
 
 <div class="basic-clustermap flex overflow-hidden" bind:this={contentE1}>
-  {#if treeData}
+  {#if treeData && clusterRows}
     <div class="flex-none">
       <DendrogramCanvas
         {treeData}
@@ -319,8 +345,16 @@
       <HeatmapCanvas
         data={heatmapData}
         raw={rawHeatmapData}
-        rowOrder={rowOrder() as string[]}
-        colOrder={colOrder() as string[]}
+        rowOrder={clusterRows
+          ? (rowOrder() as string[])
+          : heatmapData
+            ? heatmapData.rows
+            : []}
+        colOrder={clusterCols
+          ? (colOrder() as string[])
+          : heatmapData
+            ? heatmapData.cols
+            : []}
         width={heatmapWidth}
         height={heatmapHeight}
         showToolTips={toolTips}
@@ -334,7 +368,11 @@
   {#if (rowOrder() as string[]).length}
     <div class="flex-none">
       <RowLabels
-        rowOrder={rowOrder() as string[]}
+        rowOrder={clusterRows
+          ? (rowOrder() as string[])
+          : heatmapData
+            ? heatmapData.rows
+            : []}
         cellHeight={cellH()}
         width={labelW}
         height={treeHeight}
