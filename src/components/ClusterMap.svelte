@@ -31,6 +31,7 @@
     null
   );
   let heatmapData = $state<HeatmapData | null>(null);
+  let toolTips = $state<boolean>(true);
 
   // WARNING: Test URLS
   const tree: string = "/row_tree.json";
@@ -239,13 +240,17 @@
   class="controls flex items-center justify-between px-2 py-1"
   bind:this={controlsE1}
 >
-  <div class="flex-none">
+  <div class="flex-none flex items-center space-x-2">
     <button
       class="bg-blue-400 hover:bg-blue-300 p-1 border-1 rounded"
       type="button"
       onclick={loadClusterData}
       disabled={waitingForCluster}>Load Data</button
     >
+    <label class="flex items-center space-x-1 ml-2 cursor-pointer select-none">
+      <input type="checkbox" bind:checked={toolTips} class="accent-blue-500" />
+      <span class="text-xs text-white">Show tooltips</span>
+    </label>
   </div>
   <div class="flex flex-none space-x-2">
     <button
@@ -318,7 +323,7 @@
         colOrder={colOrder() as string[]}
         width={heatmapWidth}
         height={heatmapHeight}
-        showToolTips={true}
+        showToolTips={toolTips}
       />
     </div>
   {:else if treeData}
