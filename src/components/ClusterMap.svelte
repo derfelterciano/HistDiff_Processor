@@ -154,7 +154,15 @@
   // 	heatmapData = loadHeatmap(rawHeatmapData);
   // });
 
+  function resetVars() {
+    treeData = null;
+    heatmapData = null;
+    rawHeatmapData = null;
+    featTreeData = null;
+  }
+
   async function loadClusterData() {
+    resetVars();
     if (waitingForCluster) return;
     infoMsg = "waiting for data!";
     try {
@@ -237,6 +245,8 @@
       clusterCompleteUnlisten();
       clusterCompleteUnlisten = null;
     }
+
+    resetVars();
   });
 </script>
 

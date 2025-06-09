@@ -94,3 +94,4 @@ at your computer any where!
 - [ ] Address Error handling
   - **_ISSUE:_** emit a separate error flag to soft reset app state
   - [ ] Implement error emits
+- [ ] Fix Feature label mis-alignment
