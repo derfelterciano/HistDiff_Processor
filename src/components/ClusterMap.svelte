@@ -17,6 +17,7 @@
   import { invoke } from "@tauri-apps/api/core";
   import { listen } from "@tauri-apps/api/event";
   import { onDestroy } from "svelte";
+  import { stat } from "@tauri-apps/plugin-fs";
 
   const { containerHeight } = $props<{ containerHeight: number }>();
 
@@ -139,15 +140,18 @@
     return featTreeData ? getLeafOrder(featTreeData) : [];
   });
 
-  const cellH = $derived(() => {
-    const rows = (rowOrder() as string[]).length;
-    return rows ? heatmapHeight / rows : 0;
-  });
+  // const cellH = $derived(() => {
+  //   const rows = (rowOrder() as string[]).length;
+  //   return rows ? heatmapHeight / rows : 0;
+  // });
 
-  const cellW = $derived(() => {
-    const cols = (colOrder() as string[]).length;
-    return cols ? heatmapWidth / cols : 0;
-  });
+  // const cellW = $derived(() => {
+  //   const cols = (colOrder() as string[]).length;
+  //   return cols ? heatmapWidth / cols : 0;
+  // });
+
+  let cellW = $state<number>(0);
+  let cellH = $state<number>(0);
   // onMount(async () => {
   // 	treeData = await loadTreeData(tree);
   // 	rawHeatmapData = await loadHeatmapData(scores);
@@ -328,7 +332,7 @@
             : []}
         height={80}
         width={heatmapWidth}
-        cellWidth={cellW()}
+        cellWidth={cellW}
       ></ColumnLabels>
     </div>
   {/if}
@@ -368,6 +372,10 @@
         width={heatmapWidth}
         height={heatmapHeight}
         showToolTips={toolTips}
+        cellDim={(cellWidth, cellHeight) => {
+          cellW = cellWidth;
+          cellH = cellHeight;
+        }}
       />
     </div>
   {:else if treeData}
@@ -383,7 +391,7 @@
           : heatmapData
             ? heatmapData.rows
             : []}
-        cellHeight={cellH()}
+        cellHeight={cellH}
         width={labelW}
         height={treeHeight}
       />

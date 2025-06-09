@@ -12,6 +12,7 @@
     width: number; // CSS px of heatmap panel
     height: number; // CSS px
     showToolTips?: boolean;
+    cellDim?: (cellW: number, cellH: number) => void;
   }
   const {
     data,
@@ -21,6 +22,7 @@
     width,
     height,
     showToolTips = false,
+    cellDim,
   }: Props = $props();
 
   // ── 2) Local canvases ─────────────────────────────────────────────────────
@@ -42,6 +44,12 @@
   // each cell’s size (in CSS px)
   const cellW = $derived(() => width / cols());
   const cellH = $derived(() => height / rows());
+
+  $effect(() => {
+    if (cellDim) {
+      cellDim(cellW(), cellH());
+    }
+  });
 
   // ── 4) Build offscreen 1px-per-cell buffer ────────────────────────────────
   function buildBuffer() {
