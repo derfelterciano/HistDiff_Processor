@@ -9,31 +9,35 @@
   }
 
   const { colOrder, cellWidth, width, height }: Props = $props();
-  let labelDiv = $state<HTMLElement>();
+  // let labelDiv = $state<HTMLElement>();
+
+  let scaledCellWidth = $derived(cellWidth * $panZoom.scale);
+  let absWidth = $derived(colOrder.length * scaledCellWidth);
 </script>
 
 <div
-  class="overflow-hidden relative"
-  style="width: {width}px; height: {height}px; "
+  class="relative overflow-hidden"
+  style="width: {width}px; height: {height}px;"
 >
   <div
-    class="absolute top-0 left-0 flex items-end h-full overflow-x-auto"
-    style="transform: translateX({$panZoom.tx}px);"
-    bind:this={labelDiv}
+    class="flex items-end"
+    style="
+    width: {absWidth}px; 
+    height: {height}px;
+    transform: translateX({$panZoom.tx}px);
+    "
   >
-    {#each colOrder as name}
+    {#each colOrder as name, num}
       <div
-        class="flex flex-col items-center"
+        class="absolute bottom-0 flex items-end justify-center"
         style="
-			width: {Math.max(cellWidth * $panZoom.scale, 1)}px; height: 100%;
-			"
+        left: {Math.round(num * scaledCellWidth)}px;
+        width: {Math.round(scaledCellWidth)}px;
+        height: {height}px;
+        "
       >
-        <span
-          class="text-white text-[10px] whitespace-nowrap"
-          style="display: inline-block;
-            transform: rotate(-90deg);
-            transform-origin: bottom center;
-            margin-bottom: 2px;">{name}</span
+        <span class="label-item-span text-white text-[10px] whitespace-nowrap"
+          >{name}</span
         >
       </div>
     {/each}
@@ -41,5 +45,11 @@
 </div>
 
 <style>
-  @reference 'tailwindcss';
+  .label-item-span {
+    display: inline-block;
+    /* transform-origin: left bottom;
+    transform: rotate(-90deg); */
+    transform-origin: bottom center;
+    transform: rotate(-90deg) translateY(50%) translateX(50%);
+  }
 </style>
