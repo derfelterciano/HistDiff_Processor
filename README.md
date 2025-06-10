@@ -61,7 +61,7 @@ at your computer any where!
   - [x] Implement UI for user to output HistDiff data .
     - [x] Call a file dialogue for users to choose where to output data
 - [ ] Implement visualization and visual analysis
-  - [ ] Implement Heatmap view
+  - [x] Implement Heatmap view
     - _Use: HTMLCanvas for heatmaps. D3 doesn't work well with large data_
     - [x] Implment heatmap
     - **Functionality**
@@ -75,7 +75,7 @@ at your computer any where!
       - [x] Left dendrogram
       - [x] Right dendrogram
     - Use new clustering library
-    - [ ] Integrate clustering library to app's rust library
+    - [x] Integrate clustering library to app's rust library
       - [x] Convert json tree into D3 compliant json tree
       - [x] Implement dendrogram
       - [x] Create ability to safely transpose dataframes so both rows and cols are clustered
@@ -94,4 +94,4 @@ at your computer any where!
 - [ ] Address Error handling
   - **_ISSUE:_** emit a separate error flag to soft reset app state
   - [ ] Implement error emits
-- [ ] Fix Feature label mis-alignment
+- [x] Fix Feature label mis-alignment
