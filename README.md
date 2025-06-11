@@ -63,7 +63,7 @@ at your computer any where!
 - [ ] Implement visualization and visual analysis
   - [x] Implement Heatmap view
     - _Use: HTMLCanvas for heatmaps. D3 doesn't work well with large data_
-    - [x] Implment heatmap
+    - [ ] Implment heatmap
     - **Functionality**
       - [x] Add zoom capabilities
       - [x] Fit entire heatmap onto entire canvas
@@ -71,6 +71,7 @@ at your computer any where!
       - [x] Add zoom in and out button
       - [x] fix canvas so it sits nicely in window
       - [x] add tool tips hover so uses can see cell info
+      - [ ] Mark negative control rows with a red background
     - [x] Implement dendrograms
       - [x] Left dendrogram
       - [x] Right dendrogram
