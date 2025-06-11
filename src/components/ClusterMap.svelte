@@ -17,6 +17,7 @@
   import { invoke } from "@tauri-apps/api/core";
   import { listen } from "@tauri-apps/api/event";
   import { onDestroy } from "svelte";
+  import ContrastSlider from "./clusterMap/contrastSlider.svelte";
 
   const { containerHeight } = $props<{ containerHeight: number }>();
 
@@ -32,7 +33,11 @@
   );
   let heatmapData = $state<HeatmapData | null>(null);
   let toolTips = $state<boolean>(true);
-  let contrastMinMax = $state<[number, number]>([-0.005, 0.005]);
+  let contrastVal = $state<number>(0.005);
+  let contrastMinMax = $derived((): [number, number] => {
+    return [-contrastVal, contrastVal];
+  });
+  // let contrastMinMax = $state<[number, number]>([-0.005, 0.005]);
 
   // Clustering options
   let clusterRows = $state<boolean>(true);
@@ -306,7 +311,7 @@
     >
   </div>
   <div class="flex-none">
-    <!-- Future buttons go here -->
+    <ContrastSlider bind:value={contrastVal} />
   </div>
 </div>
 
@@ -377,7 +382,7 @@
           cellW = cellWidth;
           cellH = cellHeight;
         }}
-        contrast={contrastMinMax}
+        contrast={contrastMinMax()}
       />
     </div>
   {:else if treeData}
