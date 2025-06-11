@@ -71,7 +71,8 @@ at your computer any where!
       - [x] Add zoom in and out button
       - [x] fix canvas so it sits nicely in window
       - [x] add tool tips hover so uses can see cell info
-      - [ ] Mark negative control rows with a red background
+      - [x] Mark negative control rows with a red background\
+      - [ ] Add a slide to adjust contrast
     - [x] Implement dendrograms
       - [x] Left dendrogram
       - [x] Right dendrogram

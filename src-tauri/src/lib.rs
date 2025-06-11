@@ -5,7 +5,8 @@ mod tauri_components;
 
 use analysis::{cluster_hd, get_cluster_res};
 use hd_interface::{
-    get_hd_scores, process_hd, reset_state, write_res, ClusterState, HistDiffState,
+    get_hd_scores, get_neg_controls, process_hd, reset_state, write_res, ClusterState,
+    HistDiffState, NegControlState,
 };
 use histdiff_core::*;
 use std::sync::Arc;
@@ -31,6 +32,7 @@ pub fn run() {
 
             app.manage(HistDiffState::new());
             app.manage(ClusterState::new());
+            app.manage(NegControlState::new());
             return Ok(());
         })
         .invoke_handler(tauri::generate_handler![
@@ -46,7 +48,8 @@ pub fn run() {
             cluster_hd,
             get_cluster_res,
             get_hd_scores,
-            reset_state
+            reset_state,
+            get_neg_controls
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

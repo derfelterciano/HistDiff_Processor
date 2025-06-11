@@ -17,7 +17,6 @@
   import { invoke } from "@tauri-apps/api/core";
   import { listen } from "@tauri-apps/api/event";
   import { onDestroy } from "svelte";
-  import { stat } from "@tauri-apps/plugin-fs";
 
   const { containerHeight } = $props<{ containerHeight: number }>();
 
@@ -33,6 +32,7 @@
   );
   let heatmapData = $state<HeatmapData | null>(null);
   let toolTips = $state<boolean>(true);
+  let contrastMinMax = $state<[number, number]>([-0.005, 0.005]);
 
   // Clustering options
   let clusterRows = $state<boolean>(true);
@@ -310,6 +310,7 @@
   </div>
 </div>
 
+<!-- Actual Clustermap markdown below -->
 <div class="top-cluster" bind:this={topContentE1}>
   {#if featTreeData && clusterCols}
     <div style="padding-left: {TREE_WIDTH}px; padding-right: {LABEL_WIDTH}px;">
@@ -376,6 +377,7 @@
           cellW = cellWidth;
           cellH = cellHeight;
         }}
+        contrast={contrastMinMax}
       />
     </div>
   {:else if treeData}

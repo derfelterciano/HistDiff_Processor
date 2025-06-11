@@ -36,3 +36,7 @@ pub struct HistDiffState {
 pub struct ClusterState {
     pub cluster_res: Mutex<Option<ClusterRes>>,
 }
+
+pub struct NegControlState {
+    pub cntrls: Mutex<Option<Vec<String>>>,
+}

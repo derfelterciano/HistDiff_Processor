@@ -5,12 +5,18 @@ use serde_json::Value;
 use std::{collections::HashMap, error::Error, sync::Arc};
 use tauri::{Emitter, Manager, State};
 
-use super::{clean_well_names, HistDiffState, SvelteConfig};
+use super::{clean_well_names, HistDiffState, NegControlState, SvelteConfig};
 
 #[tauri::command]
 pub fn process_hd(app: tauri::AppHandle, config: SvelteConfig) {
     let hd_config = svelte_to_hd_config(config);
     // println!("Max threads: {:?}", num_cpus::get());
+
+    {
+        let state = app.state::<NegControlState>();
+        let mut guard = state.cntrls.lock().unwrap();
+        *guard = Some(hd_config.vehicle_cntrls.clone());
+    }
 
     log::info!("Max threads: {:?}", num_cpus::get());
     log::info!("Begin HistDiff...");
@@ -86,6 +92,21 @@ pub fn write_res(app: tauri::AppHandle, out_path: String) {
         }
         None => {
             log::error!("Couldn't get scores");
+        }
+    }
+}
+
+#[tauri::command]
+pub fn get_neg_controls(neg_cntrls: State<'_, NegControlState>) -> Option<Vec<String>> {
+    let guard = neg_cntrls.cntrls.lock().unwrap();
+
+    match &*guard {
+        Some(cntrl) => {
+            return Some(cntrl.clone());
+        }
+
+        None => {
+            return None;
         }
     }
 }

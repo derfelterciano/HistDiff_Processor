@@ -13,6 +13,7 @@
     height: number; // CSS px
     showToolTips?: boolean;
     cellDim?: (cellW: number, cellH: number) => void;
+    contrast?: [number, number];
   }
   const {
     data,
@@ -23,6 +24,7 @@
     height,
     showToolTips = false,
     cellDim,
+    contrast = [-0.005, 0.005],
   }: Props = $props();
 
   // ── 2) Local canvases ─────────────────────────────────────────────────────
@@ -61,11 +63,12 @@
     const ctx = buf.getContext("2d")!;
     ctx.imageSmoothingEnabled = false;
 
+    const [colorMin, colorMax] = contrast;
     // 2) color scale
     const values = data.cells.map((c) => c.value);
     const colorFn = d3
       .scaleSequential(d3.interpolateViridis)
-      .domain([-0.005, 0.005]) as any;
+      .domain([colorMin, colorMax]) as any;
 
     // 3) paint one pixel per cell
     for (let i = 0; i < rows(); i++) {
