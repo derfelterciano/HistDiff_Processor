@@ -1,0 +1,42 @@
+name: Rust Unit Test (src-tauri)
+
+on:
+  push:
+    paths:
+      - "src-tauri/**"
+      - ".github/workflows/rust_unittest.yml"
+  pull_request:
+    paths:
+      - "src-tauri/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: setup rust
+        run: |
+          rustup update
+          rustup component add clippy
+
+      - name: toolchain info
+        run: |
+          cargo --version --verbose
+          rustc --version
+          cargo clippy --version
+
+      - name: cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            src-tauri/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('src-tauri/Cargo.lock') }}
+
+      - name: run tests
+        working-directory: src-tauri
+        run: cargo test --all-features --verbose
