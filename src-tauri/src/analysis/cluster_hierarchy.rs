@@ -130,3 +130,41 @@ fn grab_col_idx_as_str(df: &DataFrame, idx: usize) -> PolarsResult<HashMap<usize
 
     return Ok(vec);
 }
+
+#[cfg(test)]
+mod cluster_hierarchy_test {
+    use super::*;
+    use std::collections::HashMap;
+    use std::fs;
+
+    #[test]
+    fn test_write_raw_scores_json_creates_valid_json_file() {
+        let mut scores = HashMap::new();
+        scores.insert("foo", 1);
+        scores.insert("bar", 2);
+
+        let path = "test_scores.json";
+        write_raw_scores_json(path, &scores).unwrap();
+
+        // Check file content
+        let data = fs::read_to_string(path).unwrap();
+        assert!(data.contains("\"foo\":1"));
+        assert!(data.contains("\"bar\":2"));
+
+        // Clean up
+        fs::remove_file(path).unwrap();
+    }
+
+    #[test]
+    fn test_grab_col_idx_as_str_extracts_strings() {
+        let ids = Series::new("ids".into(), &["a", "b", "c"]);
+        let vals = Series::new("vals".into(), &[10, 20, 30]);
+        let df = DataFrame::new(vec![ids.clone().into(), vals.clone().into()]).unwrap();
+
+        let res = grab_col_idx_as_str(&df, 0).unwrap();
+        assert_eq!(res.len(), 3);
+        assert_eq!(res.get(&0), Some(&"a".to_string()));
+        assert_eq!(res.get(&1), Some(&"b".to_string()));
+        assert_eq!(res.get(&2), Some(&"c".to_string()));
+    }
+}

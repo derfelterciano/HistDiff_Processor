@@ -52,3 +52,51 @@ fn build_d3_tree(root: &DendrogramNode, name_map: &HashMap<usize, String>) -> D3
         children: kids,
     };
 }
+
+#[cfg(test)]
+mod node_utilities_tests {
+    use super::*;
+    use std::collections::HashMap;
+    use std::fs;
+
+    // --- D3Node tests ---
+
+    #[test]
+    fn test_d3node_to_json_serializes() {
+        let node = D3Node {
+            cid: 1,
+            name: Some("root".to_string()),
+            dist: 0.0,
+            children: vec![D3Node {
+                cid: 2,
+                name: Some("child".to_string()),
+                dist: 1.0,
+                children: vec![],
+            }],
+        };
+
+        let json = node.to_json();
+        assert!(json.contains("\"cid\": 1"));
+        assert!(json.contains("\"name\": \"root\""));
+        assert!(json.contains("\"cid\": 2"));
+        assert!(json.contains("\"dist\": 1.0"));
+    }
+
+    #[test]
+    fn test_d3node_write_json_writes_file() {
+        let node = D3Node {
+            cid: 1,
+            name: Some("test".to_string()),
+            dist: 0.0,
+            children: vec![],
+        };
+
+        let path = "test_d3node.json";
+        node.write_json(path).unwrap();
+
+        let content = fs::read_to_string(path).unwrap();
+        assert!(content.contains("\"name\": \"test\""));
+
+        fs::remove_file(path).unwrap();
+    }
+}
