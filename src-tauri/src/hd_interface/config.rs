@@ -59,7 +59,37 @@ fn svelte_to_hd_config(config: SvelteConfig) -> UserConfig {
     let plate = &config.plate_format; // TODO: Convert between the different plates
     let ref_cntrls = clean_well_names(&config.negative_control.wells);
 
-    return UserConfig::new(path, id, useless_meta, true, None, None, ref_cntrls, None);
+    let mut plate_def: Option<Vec<String>> = None;
+    if *plate == (96 as u32) {
+        plate_def = Some(plate_96_def());
+    }
+
+    return UserConfig::new(
+        path,
+        id,
+        useless_meta,
+        true,
+        None,
+        plate_def,
+        ref_cntrls,
+        None,
+    );
+}
+
+fn plate_96_def() -> Vec<String> {
+    const WELL_96_LETTERS: std::ops::RangeInclusive<u8> = ('A' as u8)..=('H' as u8);
+    const WELL_96_NUMBERS: std::ops::RangeInclusive<i32> = 1..=12;
+
+    let mut res: Vec<String> = Vec::new();
+
+    for letter in WELL_96_LETTERS {
+        for num in WELL_96_NUMBERS {
+            let format_str = format!("{}{}", letter as char, num);
+            res.push(format_str);
+        }
+    }
+
+    return res;
 }
 
 #[tauri::command]
