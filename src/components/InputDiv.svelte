@@ -13,6 +13,7 @@
   import { onMount, onDestroy } from "svelte";
   import { listen } from "@tauri-apps/api/event";
   import OutputDialogue from "./inputComps/OutputDialogue.svelte";
+  import ComboBox from "./inputComps/ComboBox.svelte";
 
   let file_path: string = $state("");
   let well_col: string = $state("");
@@ -133,13 +134,15 @@
   </h3>
   <label class="select-data flex items-center px-2 w-full">
     <span class="mr-2">Dataset:</span>
-    <FileSelect bind:file_path bind:headers />
+    <div class="cursor-pointer w-full">
+      <FileSelect bind:file_path bind:headers />
+    </div>
   </label>
 
   <label class="mt-4 w-full px-2">
     <span class="mr-2">Plate format:</span>
     <select
-      class="border-2 rounded-sm text-black hover:bg-gray-300 bg-white appearance-auto px-2"
+      class="border-2 rounded-sm cursor-pointer text-black hover:bg-gray-300 bg-white appearance-auto px-2"
       bind:value={plateFormat}
     >
       <option value={384}>384-Well</option>
@@ -149,16 +152,16 @@
 
   <div class="meta-information">
     <h6>Meta Information</h6>
-    <label class="mb-3">
-      <span class="mr-2">Well Name Column:</span>
+    <label class="mb-3 flex w-full">
+      <span class="w-[65%]">Well Name Column:</span>
       <!-- EXPERIMENTAL Combobox-->
-      <!-- <Combobox items={headers} bind:selectedValue={well_col} /> -->
-      <input
+      <ComboBox bind:options={headers} bind:value={well_col} />
+      <!-- <input
         class="bg-white text-black text-center border-2 border-white rounded-sm"
         type="text"
         placeholder="Enter column name"
         bind:value={well_col}
-      />
+      /> -->
     </label>
 
     <DynamicText title="Additional Meta" bind:arrayOptions={additionalMeta} />
@@ -177,7 +180,7 @@
 
   <button
     type="submit"
-    class="justify-center mt-4 border-2 rounded-lg px-4 py-1 text-center bg-green-500 hover:bg-green-600"
+    class="cursor-pointer justify-center mt-4 border-2 rounded-lg px-4 py-1 text-center bg-green-500 hover:bg-green-600"
     disabled={isProcessing}>{isProcessing ? "Processing..." : "Submit"}</button
   >
 
@@ -188,7 +191,7 @@
   {#if isProcessing}
     <button
       type="button"
-      class="justify-center mt-2 border-2 rounded-sm text-sm bg-fuchsia-800 p-1 text-center"
+      class="cursor-pointer justify-center mt-2 border-2 rounded-sm text-sm bg-fuchsia-800 p-1 text-center"
       onclick={openLogs}>Open Logs</button
     >
   {/if}
@@ -197,11 +200,13 @@
     <span class="mt-5 text-md text-red-400">{errorMessage}</span>
   {/if}
 
-  <button
-    type="button"
-    class="mt-3 bg-rose-400 hover:bg-rose-300 rounded-sm p-1 border-2"
-    onclick={openAnalysis}>Open Analysis Window</button
-  >
+  {#if saveReady}
+    <button
+      type="button"
+      class="cursor-pointer mt-3 bg-rose-400 hover:bg-rose-300 rounded-sm p-1 border-2"
+      onclick={openAnalysis}>Open Analysis Window</button
+    >
+  {/if}
 </form>
 
 <style>

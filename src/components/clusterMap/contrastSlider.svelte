@@ -23,7 +23,15 @@
 
 <div class="contrast-slide">
   <label class="text-md text-black">Contrast</label>
-  <input type="range" {min} {max} {step} {value} oninput={handleInput} />
+  <input
+    class="cursor-pointer"
+    type="range"
+    {min}
+    {max}
+    {step}
+    {value}
+    oninput={handleInput}
+  />
   <input
     class="text-xs bg-white text-black rounded-sm px-1"
     type="number"

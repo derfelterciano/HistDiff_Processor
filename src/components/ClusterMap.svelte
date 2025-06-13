@@ -265,7 +265,7 @@
 >
   <div class="flex-none flex items-center space-x-2">
     <button
-      class="bg-blue-400 hover:bg-blue-300 p-1 border-1 rounded"
+      class="cursor-pointer bg-blue-400 hover:bg-blue-300 p-1 border-1 rounded"
       type="button"
       onclick={loadClusterData}
       disabled={waitingForCluster}>Load Data</button
@@ -295,17 +295,17 @@
   </div>
   <div class="flex flex-none space-x-2">
     <button
-      class="bg-red-500 hover:bg-red-400 p-1 border-1 rounded"
+      class="cursor-pointer bg-red-500 hover:bg-red-400 p-1 border-1 rounded"
       type="button"
       onclick={zoomIn}>Zoom In</button
     >
     <button
-      class="bg-red-500 hover:bg-red-400 p-1 border-1 rounded"
+      class="cursor-pointer bg-red-500 hover:bg-red-400 p-1 border-1 rounded"
       type="button"
       onclick={zoomOut}>Zoom Out</button
     >
     <button
-      class="bg-red-500 hover:bg-red-400 p-1 border-1 rounded"
+      class="cursor-pointer bg-red-500 hover:bg-red-400 p-1 border-1 rounded"
       type="button"
       onclick={reset}>Reset</button
     >
