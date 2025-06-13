@@ -34,7 +34,7 @@ at your computer any where!
     - [x] construct plate assay replica
     - [x] implement option for 96-well plate (optional)
     - [x] Add functionality for persistent well selection state
-    - [ ] TODO: fix styling
+    - [x] TODO: fix styling
   - [x] Additional meta information to ignore
   - [x] Well name column
     - [ ] Implement drop down option

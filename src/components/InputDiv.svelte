@@ -139,7 +139,7 @@
   <label class="mt-4 w-full px-2">
     <span class="mr-2">Plate format:</span>
     <select
-      class="border-2 rounded-sm text-black hover:bg-gray-500 appearance-auto px-2"
+      class="border-2 rounded-sm text-black hover:bg-gray-300 bg-white appearance-auto px-2"
       bind:value={plateFormat}
     >
       <option value={384}>384-Well</option>
