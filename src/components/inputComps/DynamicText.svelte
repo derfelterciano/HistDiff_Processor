@@ -5,26 +5,47 @@
   export let title: string = "";
   export let options: string[] = [];
 
+  let arrayRows: { id: number; value: string }[] = [];
+  let nextID = 0;
+  let lastArrayOptions: string[] = [];
+
+  // Only update arrayRows when parent prop changes (and NOT from our own UI)
+  $: if (arrayOptions !== lastArrayOptions) {
+    arrayRows = arrayOptions.map((value, i) => ({
+      id: i + 100000 * Math.random(),
+      value,
+    }));
+    nextID = arrayRows.length;
+    lastArrayOptions = arrayOptions;
+  }
+
+  function syncToParent() {
+    arrayOptions = arrayRows.map((row) => row.value);
+    lastArrayOptions = arrayOptions; // update guard
+  }
+
   function onAddMetaInfo(): void {
-    arrayOptions = [...arrayOptions, ""];
+    arrayRows = [...arrayRows, { id: nextID++, value: "" }];
+    syncToParent();
   }
 
-  function onUpdateMetaInfo(index: number, value: string): void {
-    arrayOptions[index] = value;
-    arrayOptions = arrayOptions;
+  function onRemoveMetaInfo(id: number): void {
+    arrayRows = arrayRows.filter((row) => row.id !== id);
+    syncToParent();
   }
 
-  function onRemoveMetaInfo(index: number): void {
-    arrayOptions = arrayOptions.filter((_, i) => i !== index);
+  function onUpdateValue(index: number, val: string): void {
+    arrayRows[index].value = val;
+    syncToParent();
   }
 </script>
 
 <div class="dynamic-array">
   <h6 class="font-bold mb-2 text-center">{title}</h6>
   <div class="scroll-area mb-2 px-4">
-    {#each arrayOptions as option, index}
+    {#each arrayRows as row, index (row.id)}
       <div class="flex items-center space-x-2 mb-2">
-        <Combobox bind:value={arrayOptions[index]} bind:options />
+        <Combobox bind:value={arrayRows[index].value} bind:options />
         <!-- <input
           class="bg-white text-black text-center rounded border w-full"
           type="text"
@@ -35,7 +56,7 @@
         /> -->
         <button
           class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded"
-          on:click={() => onRemoveMetaInfo(index)}
+          on:click={() => onRemoveMetaInfo(row.id)}
           type="button">-</button
         >
       </div>

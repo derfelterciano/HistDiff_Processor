@@ -27,7 +27,7 @@ at your computer any where!
 
 ## TO-DO:
 
-- [ ] Implement user input/config
+- [x] Implement user input/config
   - [x] File selection
   - [x] Control definitions
     - [x] create a pop out to select negative controls
@@ -37,8 +37,8 @@ at your computer any where!
     - [x] TODO: fix styling
   - [x] Additional meta information to ignore
   - [x] Well name column
-    - [ ] Implement drop down option
-      - Use the following: [carbon components](https://svelte.carbondesignsystem.com/)
+    - [x] Implement drop down option
+      - ~~Use the following: [carbon components](https://svelte.carbondesignsystem.com/)~~
 - [x] Implement Rust to Svelte API
   - [x] Rewrite HistDiff input to "mimick" histdiff binary
     - RUST SIDE IMPLEMENTATION
