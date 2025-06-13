@@ -51,6 +51,21 @@ pub fn run() {
             reset_state,
             get_neg_controls
         ])
+        .on_window_event(|win: &tauri::Window, event| {
+            if let tauri::WindowEvent::CloseRequested { .. } = event {
+                let label = win.label();
+
+                if label == "main" {
+                    let handle = win.app_handle();
+                    for (label, w) in handle.webview_windows() {
+                        if label != "main" {
+                            let _ = w.close();
+                        }
+                    }
+                    win.app_handle().exit(0);
+                }
+            }
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
