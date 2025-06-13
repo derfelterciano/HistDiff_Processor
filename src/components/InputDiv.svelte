@@ -164,7 +164,11 @@
       /> -->
     </label>
 
-    <DynamicText title="Additional Meta" bind:arrayOptions={additionalMeta} />
+    <DynamicText
+      title="Additional Meta"
+      bind:arrayOptions={additionalMeta}
+      bind:options={headers}
+    />
   </div>
 
   <div class="negative-controls flex flex-col items-center mt-2">

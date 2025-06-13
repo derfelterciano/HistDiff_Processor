@@ -1,6 +1,9 @@
 <script lang="ts">
+  import Combobox from "./ComboBox.svelte";
+
   export let arrayOptions: string[];
   export let title: string = "";
+  export let options: string[] = [];
 
   function onAddMetaInfo(): void {
     arrayOptions = [...arrayOptions, ""];
@@ -21,14 +24,15 @@
   <div class="scroll-area mb-2 px-4">
     {#each arrayOptions as option, index}
       <div class="flex items-center space-x-2 mb-2">
-        <input
+        <Combobox bind:value={arrayOptions[index]} bind:options />
+        <!-- <input
           class="bg-white text-black text-center rounded border w-full"
           type="text"
           value={option}
           placeholder="Enter information"
           on:input={(e) =>
             onUpdateMetaInfo(index, (e.target as HTMLInputElement).value)}
-        />
+        /> -->
         <button
           class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded"
           on:click={() => onRemoveMetaInfo(index)}
@@ -49,10 +53,12 @@
 
   .dynamic-array {
     @apply flex flex-col items-center border rounded-md w-full p-2;
+    max-height: 150px;
+    overflow-y: auto;
   }
   .scroll-area {
     @apply w-full;
-    max-height: 150px;
-    overflow-y: auto;
+    /* max-height: 150px;
+    overflow-y: auto; */
   }
 </style>

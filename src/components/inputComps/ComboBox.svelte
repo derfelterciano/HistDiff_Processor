@@ -34,7 +34,7 @@
   function onInput(e: Event) {
     inputValue = (e.target as HTMLInputElement).value;
     showList = true;
-    value = "";
+    value = inputValue;
   }
 
   function onBlur() {
