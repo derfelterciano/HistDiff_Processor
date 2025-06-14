@@ -85,6 +85,7 @@ at your computer any where!
       - [x] Parse backend output for svelte to use
     - [x] Implement backend aspect of the heatmap
       - API has been implemented, dev can now call get_cluster_res to grab d3 results
+    - [ ] Add options to choose calculation metrics!
   - [ ] Implement Score distribution
   - [ ] Implement positive control score distribution
 
