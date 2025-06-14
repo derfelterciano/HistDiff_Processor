@@ -21,6 +21,9 @@
 
   const { containerHeight } = $props<{ containerHeight: number }>();
 
+  const LINKAGES = ["Complete", "Single", "Average"];
+  const METRICS = ["Pearson", "Distance"];
+
   // let containerHeight = $state<number>(window.innerHeight);
   let infoMsg = $state<string | null>("Waiting for data!");
   let clusterCompleteUnlisten: (() => void) | null = null;
@@ -42,6 +45,13 @@
   // Clustering options
   let clusterRows = $state<boolean>(true);
   let clusterCols = $state<boolean>(true);
+
+  // calculation params
+  let currentLinkage = $state<string>("Single");
+  let currentMetric = $state<string>("Pearson");
+
+  let lastLinkage = $state<string>("Single");
+  let lastMetric = $state<string>("Pearson");
 
   // WARNING: Test URLS
   const tree: string = "/row_tree.json";
@@ -174,6 +184,10 @@
     resetVars();
     if (waitingForCluster) return;
     infoMsg = "waiting for data!";
+
+    const paramsChanged =
+      currentLinkage !== lastLinkage || currentMetric !== lastMetric;
+
     try {
       let rawScores = await invoke<Record<
         string,
@@ -192,9 +206,11 @@
 
       let res = await invoke<ClusterRes | null>("get_cluster_res");
       res = jsonParser<ClusterRes>(res);
-      if (!res) {
-        infoMsg =
-          "ClusterData has not been calculated yet! Calculating data now!";
+
+      if (!res || paramsChanged) {
+        infoMsg = paramsChanged
+          ? `Calculation Parameters changed to ${currentMetric}, ${currentLinkage}`
+          : "ClusterData has not been calculated yet! Calculating data now!";
         await invoke("terminal", { msg: infoMsg });
         waitingForCluster = true;
 
@@ -213,6 +229,10 @@
               if (finishedRes) {
                 treeData = jsonParser<D3Node>(finishedRes.row_cluster);
                 featTreeData = jsonParser<D3Node>(finishedRes.col_cluster);
+
+                lastLinkage = currentLinkage;
+                lastMetric = currentMetric;
+
                 await invoke("terminal", {
                   msg: "Got Tree Data!",
                 });
@@ -225,8 +245,8 @@
         }
 
         await invoke("cluster_hd", {
-          matMetric: "Pearson",
-          linkage: "Complete",
+          matMetric: currentMetric,
+          linkage: currentLinkage,
           features: true,
         });
 
@@ -270,28 +290,73 @@
       onclick={loadClusterData}
       disabled={waitingForCluster}>Load Data</button
     >
-    <label class="flex items-center space-x-1 ml-2 cursor-pointer select-none">
-      <input type="checkbox" bind:checked={toolTips} class="accent-blue-500" />
-      <span class="text-xs text-white">Show tooltips</span>
+
+    <label
+      class="flex flex-col border-2 border-white rounded-sm p-2 items-center"
+    >
+      <span class="text-[12px] text-white w-full text-center"
+        >Distance Matrix Metric</span
+      >
+      <select
+        bind:value={currentMetric}
+        class="rounded p-1 border rounded bg-white text-black mr-2 text-center"
+      >
+        {#each METRICS as metric}
+          <option value={metric}>{metric}</option>
+        {/each}
+      </select>
     </label>
 
-    <label class="flex items-center space-x-1 ml-2 cursor-pointer select-none">
-      <input
-        type="checkbox"
-        bind:checked={clusterCols}
-        class="accent-blue-500"
-      />
-      <span class="text-xs text-white">Cluster Features</span>
+    <label
+      class="flex flex-col border-2 border-white rounded-sm p-2 items-center"
+    >
+      <span class="text-[12px] text-white w-full text-center"
+        >Linkage Method</span
+      >
+      <select
+        bind:value={currentLinkage}
+        class="rounded p-1 border rounded bg-white text-black mr-2 text-center"
+      >
+        {#each LINKAGES as linkage}
+          <option value={linkage}>{linkage}</option>
+        {/each}
+      </select>
     </label>
 
-    <label class="flex items-center space-x-1 ml-2 cursor-pointer select-none">
-      <input
-        type="checkbox"
-        bind:checked={clusterRows}
-        class="accent-blue-500"
-      />
-      <span class="text-xs text-white">Cluster Rows</span>
-    </label>
+    <div class="cluster-settings flex flex-col items-start space-y-1">
+      <label
+        class="flex items-center space-x-1 ml-2 cursor-pointer select-none"
+      >
+        <input
+          type="checkbox"
+          bind:checked={toolTips}
+          class="accent-blue-500"
+        />
+        <span class="text-xs text-white">Show tooltips</span>
+      </label>
+
+      <label
+        class="flex items-center space-x-1 ml-2 cursor-pointer select-none"
+      >
+        <input
+          type="checkbox"
+          bind:checked={clusterCols}
+          class="accent-blue-500"
+        />
+        <span class="text-xs text-white">Cluster Features</span>
+      </label>
+
+      <label
+        class="flex items-center space-x-1 ml-2 cursor-pointer select-none"
+      >
+        <input
+          type="checkbox"
+          bind:checked={clusterRows}
+          class="accent-blue-500"
+        />
+        <span class="text-xs text-white">Cluster Rows</span>
+      </label>
+    </div>
   </div>
   <div class="flex flex-none space-x-2">
     <button
