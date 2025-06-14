@@ -5,7 +5,7 @@ use cp_hierarchical_clustering::{
     create_hierarchy_from_df, ClusterHierarchy, DendrogramNode, LinkageMethod, Metric,
 };
 use histdiff_core::HistDiffRes;
-use polars::prelude::*;
+use polars::{frame::row, prelude::*};
 use rayon::ThreadPoolBuilder;
 use serde::Serialize;
 use tauri::{AppHandle, Emitter, Manager, State};
@@ -70,6 +70,8 @@ pub fn cluster_hd(
                     create_hierarchy_from_df(&data_t, mat_metric, linkage, &None).unwrap();
 
                 let d3_features = convert_to_d3(&cluster_features, &feature_map);
+                log::warn!("FEAT NODE COUNT: {}", d3_features.count_nodes());
+
                 feat_clust = Some(d3_features.to_json());
 
                 //WARNING: Remove utility lines
@@ -77,6 +79,8 @@ pub fn cluster_hd(
 
                 // log::warn!("{}", d3_features.to_json());
             }
+
+            log::warn!("ROW NODE COUNT: {}", row_d3.count_nodes());
 
             let clust_res = ClusterRes::new(Some(row_d3.to_json()), feat_clust);
             let state = app.state::<ClusterState>();

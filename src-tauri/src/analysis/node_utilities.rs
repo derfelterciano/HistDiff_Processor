@@ -23,6 +23,14 @@ impl D3Node {
 
         return Ok(());
     }
+
+    pub fn count_nodes(&self) -> usize {
+        return 1 + self
+            .children
+            .iter()
+            .map(|child| child.count_nodes())
+            .sum::<usize>();
+    }
 }
 
 pub(in crate::analysis) fn convert_to_d3(

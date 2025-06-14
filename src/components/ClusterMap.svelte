@@ -47,10 +47,10 @@
   let clusterCols = $state<boolean>(true);
 
   // calculation params
-  let currentLinkage = $state<string>("Single");
+  let currentLinkage = $state<string>("Complete");
   let currentMetric = $state<string>("Pearson");
 
-  let lastLinkage = $state<string>("Single");
+  let lastLinkage = $state<string>("Complete");
   let lastMetric = $state<string>("Pearson");
 
   // WARNING: Test URLS
@@ -316,6 +316,7 @@
       <select
         bind:value={currentLinkage}
         class="rounded p-1 border rounded bg-white text-black mr-2 text-center"
+        disabled={true}
       >
         {#each LINKAGES as linkage}
           <option value={linkage}>{linkage}</option>
