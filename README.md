@@ -2,6 +2,18 @@
 
 ### **by Derfel Terciano**
 
+---
+
+#### Project Status
+
+![GitHub License](https://img.shields.io/github/license/derfelterciano/HistDiff_Processor)
+
+![GitHub package.json version](https://img.shields.io/github/package-json/v/derfelterciano/HistDiff_Processor) ![GitHub Tag](https://img.shields.io/github/v/tag/derfelterciano/HistDiff_Processor?include_prereleases&style=flat)
+
+[![Rust Unit Test (src-tauri)](https://github.com/derfelterciano/HistDiff_Processor/actions/workflows/rust_unittest.yml/badge.svg?branch=Release)](https://github.com/derfelterciano/HistDiff_Processor/actions/workflows/rust_unittest.yml) [![publish for download](https://github.com/derfelterciano/HistDiff_Processor/actions/workflows/deploy.yml/badge.svg?branch=Release)](https://github.com/derfelterciano/HistDiff_Processor/actions/workflows/deploy.yml)
+
+---
+
 ## What this is
 
 This is a localized version of the full HistDiff pipeline for Cytological Profiling.
@@ -9,21 +21,27 @@ The idea here is to make it easier for labs to process their own data locally.
 This means no web servers, no middle man for data, just pure HistDiff processing
 at your computer any where!
 
+---
+
 ## Planned features:
 
-- Heat map visualization!
+**_Due: to the ambitiousness of the project, it is difficult to implement everything_**
+
+- Heat map visualization! **[Completed!]**
   - See your HistDiff ASAP!
-- Score distribution
+- Score distribution **[Not yet implmented / WIP]**
   - Visualize the distribution of the HistDiff scores.
-- Quality control
-  - Visualize the activity levels of your controls.
-  - Identify any striping or plate effects in assay plate.
-  - Re-run histdiff if any striping is seen on plates.
-  - See PCA loadings of controls and experiment.
+- ~~Quality control~~ **[Deprecated]**
+  - ~~Visualize the activity levels of your controls.~~
+  - ~~Identify any striping or plate effects in assay plate.~~
+  - ~~Re-run histdiff if any striping is seen on plates.~~
+  - ~~See PCA loadings of controls and experiment.~~
 - Once satisifed with results, users can export their experiements.
 
 - _Planned fun feature:_
   - _Multiplate processing_
+
+---
 
 ## TO-DO:
 
@@ -85,9 +103,10 @@ at your computer any where!
       - [x] Parse backend output for svelte to use
     - [x] Implement backend aspect of the heatmap
       - API has been implemented, dev can now call get_cluster_res to grab d3 results
-    - [ ] Add options to choose calculation metrics!
-  - [ ] Implement Score distribution
+    - [x] Implement Score distribution
   - [ ] Implement positive control score distribution
+
+---
 
 ## Major Bugs:
 
