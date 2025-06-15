@@ -50,6 +50,7 @@ pub async fn open_analysis(app: tauri::AppHandle) {
 
     if app.get_webview_window(&label).is_none() {
         _ = WebviewWindowBuilder::new(&app, label, WebviewUrl::App(format!("/analysis").into()))
+            .title("Analysis")
             .resizable(true)
             .inner_size(1024.0, 800.0)
             .build();

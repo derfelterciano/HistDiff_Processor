@@ -26,6 +26,10 @@
   let controls: ControlDefinition[] = $state([]);
   let errorMessage: string = $state("");
 
+  $effect(() => {
+    $inspect(additionalMeta);
+  });
+
   const checkInput = () => {
     errorMessage = "";
 
@@ -156,12 +160,6 @@
       <span class="w-[65%]">Well Name Column:</span>
       <!-- EXPERIMENTAL Combobox-->
       <ComboBox bind:options={headers} bind:value={well_col} />
-      <!-- <input
-        class="bg-white text-black text-center border-2 border-white rounded-sm"
-        type="text"
-        placeholder="Enter column name"
-        bind:value={well_col}
-      /> -->
     </label>
 
     <DynamicText

@@ -19,11 +19,11 @@
     );
   });
 
-  $effect(() => {
-    $inspect(options);
-    $inspect(filtered());
-    $inspect(inputValue);
-  });
+  // $effect(() => {
+  //   $inspect(options);
+  //   $inspect(filtered());
+  //   $inspect(inputValue);
+  // });
 
   function choose(option: string) {
     value = option;

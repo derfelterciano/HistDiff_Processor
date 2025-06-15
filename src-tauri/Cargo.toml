@@ -1,8 +1,8 @@
 [package]
 name = "histdiff-pipeline"
-version = "0.5.0"
-description = "A Tauri App"
-authors = ["you"]
+version = "0.5.1"
+description = "An app that calculates and analyzes HistDiff"
+authors = ["Derfel Terciano"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -18,7 +18,8 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "*", features = [] }
 
 [dependencies]
-tauri = { version = "*", features = ["devtools"] }
+# tauri = { version = "*", features = ["devtools"] }
+tauri = { version = "*", features = [] }
 tauri-plugin-opener = "*"
 serde = { version = "*", features = ["derive"] }
 serde_json = "*"

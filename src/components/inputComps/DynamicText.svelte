@@ -1,42 +1,39 @@
 <script lang="ts">
   import Combobox from "./ComboBox.svelte";
 
-  export let arrayOptions: string[];
-  export let title: string = "";
-  export let options: string[] = [];
-
-  let arrayRows: { id: number; value: string }[] = [];
-  let nextID = 0;
-  let lastArrayOptions: string[] = [];
-
-  // Only update arrayRows when parent prop changes (and NOT from our own UI)
-  $: if (arrayOptions !== lastArrayOptions) {
-    arrayRows = arrayOptions.map((value, i) => ({
-      id: i + 100000 * Math.random(),
-      value,
-    }));
-    nextID = arrayRows.length;
-    lastArrayOptions = arrayOptions;
+  interface Props {
+    arrayOptions: string[];
+    title?: string;
+    options: string[];
   }
 
-  function syncToParent() {
+  let {
+    arrayOptions = $bindable([]),
+    title = "",
+    options = $bindable([]),
+  }: Props = $props();
+
+  let arrayRows: { id: number; value: string }[] = $state([]);
+  let nextID = $state<number>(0);
+
+  // $effect(() => {
+  //   arrayRows = arrayOptions.map((val, i) => ({
+  //     id: i + 100000 * Math.random(),
+  //     value: val,
+  //   }));
+  //   nextID = arrayRows.length;
+  // });
+
+  $effect(() => {
     arrayOptions = arrayRows.map((row) => row.value);
-    lastArrayOptions = arrayOptions; // update guard
-  }
+  });
 
-  function onAddMetaInfo(): void {
+  function onAddMetaInfo() {
     arrayRows = [...arrayRows, { id: nextID++, value: "" }];
-    syncToParent();
   }
 
-  function onRemoveMetaInfo(id: number): void {
+  function onRemoveMetaInfo(id: number) {
     arrayRows = arrayRows.filter((row) => row.id !== id);
-    syncToParent();
-  }
-
-  function onUpdateValue(index: number, val: string): void {
-    arrayRows[index].value = val;
-    syncToParent();
   }
 </script>
 
@@ -56,7 +53,7 @@
         /> -->
         <button
           class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded"
-          on:click={() => onRemoveMetaInfo(row.id)}
+          onclick={() => onRemoveMetaInfo(row.id)}
           type="button">-</button
         >
       </div>
@@ -64,7 +61,7 @@
   </div>
   <button
     class="cursor-pointer w-1/2 mx-auto bg-blue-500 text-white hover:bg-blue-600 rounded text-center"
-    on:click={onAddMetaInfo}
+    onclick={onAddMetaInfo}
     type="button">+ Add Meta Info</button
   >
 </div>
