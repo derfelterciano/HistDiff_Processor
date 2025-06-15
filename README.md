@@ -14,6 +14,13 @@
 
 ---
 
+## Download
+
+[![GitHub Release](https://img.shields.io/github/v/release/derfelterciano/HistDiff_Processor?include_prereleases&logo=githubactions&logoColor=yellow&logoSize=auto)
+](https://github.com/derfelterciano/HistDiff_Processor/releases)
+
+---
+
 ## What this is
 
 This is a localized version of the full HistDiff pipeline for Cytological Profiling.
