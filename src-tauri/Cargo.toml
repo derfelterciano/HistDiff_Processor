@@ -33,3 +33,6 @@ lazy_static = "*"
 colored = "*"
 polars = "*"
 cp_hierarchical_clustering = { path = "./cp_hierarchical_clustering"}
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-updater = "*"

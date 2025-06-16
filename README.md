@@ -2,11 +2,13 @@
 
 ### **by Derfel Terciano**
 
+<center><img src="./media/HD_screenshot.png" width="400" height="600"></center>
+
 ---
 
 #### Project Status
 
-![GitHub License](https://img.shields.io/github/license/derfelterciano/histdiff_processor)
+![GitHub License](https://img.shields.io/github/license/derfelterciano/HistDiff_Processor)
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/derfelterciano/HistDiff_Processor) ![GitHub Tag](https://img.shields.io/github/v/tag/derfelterciano/HistDiff_Processor?include_prereleases&style=flat)
 
@@ -15,6 +17,8 @@
 ---
 
 ## Download
+
+**_NOTE: BEFORE INSTALLING APPLICATION MAKE SURE TO TURN OFF YOUR ANTIVIRUS (WINDOWS) WHEN USING THIS APP!! I DO NOT HAVE A CERTIFICATE FOR THE APP SO IT WILL BE RAISED AS A POTENTIAL VIRUS!_**
 
 [![GitHub Release](https://img.shields.io/github/v/release/derfelterciano/HistDiff_Processor?include_prereleases&logo=githubactions&logoColor=yellow&logoSize=auto)
 ](https://github.com/derfelterciano/HistDiff_Processor/releases)
