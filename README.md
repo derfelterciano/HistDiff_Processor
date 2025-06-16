@@ -6,7 +6,7 @@
 
 #### Project Status
 
-![GitHub License](https://img.shields.io/github/license/derfelterciano/HistDiff_Processor)
+![GitHub License](https://img.shields.io/github/license/derfelterciano/histdiff_processor)
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/derfelterciano/HistDiff_Processor) ![GitHub Tag](https://img.shields.io/github/v/tag/derfelterciano/HistDiff_Processor?include_prereleases&style=flat)
 
