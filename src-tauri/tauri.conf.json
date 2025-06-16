@@ -30,7 +30,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDdBQTVDMTRGRDI0QkJEODgKUldTSXZVdlNUOEdsZWg0anVSVG9XL2Rob0o0Rlk5NXVsR3RWQ2ZkT2JnRnc0dUJQcDRkWnNyQ0YK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQ0ODdEREM1MDVFODhBQjYKUldTMml1Z0Z4ZDJIMUo4cUgzRkhEelFXaTdOTVNhRHFrL1VydytVY3ZldVlGZUN4Mi9obWc3UVIK",
       "endpoints": [
         "https://github.com/derfelterciano/HistDiff_Processor/releases/latest/download/latest.json"
       ],
