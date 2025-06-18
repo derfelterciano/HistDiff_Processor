@@ -1,6 +1,6 @@
 [package]
 name = "histdiff-pipeline"
-version = "0.5.1"
+version = "0.5.2"
 description = "An app that calculates and analyzes HistDiff"
 authors = ["Derfel Terciano"]
 edition = "2021"

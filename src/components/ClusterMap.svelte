@@ -324,7 +324,9 @@
       </select>
     </label>
 
-    <div class="cluster-settings flex flex-col items-start space-y-1">
+    <div
+      class="cluster-settings flex flex-col items-start space-y-1 border-2 rounded p-2"
+    >
       <label
         class="flex items-center space-x-1 ml-2 cursor-pointer select-none"
       >
