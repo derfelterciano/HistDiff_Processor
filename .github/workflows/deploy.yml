@@ -60,14 +60,14 @@ jobs:
 
             | OS | File type/extension |
             | ---- | --- |
-            | Windows | *.exe or *.msi files |
+            | Windows | *.exe or *.msi(recommended for updates) files |
             | MacOS | *.dmg or *.app.tar.gz |
             | Linux | *.rpm, *.deb, or *.AppImage |
 
             ***NOTE:*** 
             - **These executables are not signed!** 
-            - ** On Windows please run away when SmartScan pops up**
-            - ** On MacOS please bypass Gatekeep by using** `xattr -cr` *on the generated .app*
+            - **On Windows please run away when SmartScan pops up**
+            - **On MacOS please bypass Gatekeep by using** `xattr -cr` **on the generated .app**
           releaseDraft: true
           prerelease: true
           args: ${{ matrix.args }}

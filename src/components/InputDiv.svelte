@@ -190,7 +190,7 @@
     <OutputDialogue bind:saveReady />
   {/if}
 
-  {#if isProcessing}
+  {#if true}
     <button
       type="button"
       class="cursor-pointer justify-center mt-2 border-2 rounded-sm text-sm bg-fuchsia-800 p-1 text-center"

@@ -11,11 +11,11 @@ use hd_interface::{
 use histdiff_core::*;
 use std::sync::Arc;
 use tauri::Manager;
+use tauri_components::updater::update;
 use tauri_components::{
     clear_logs, get_logs, init_logger, open_analysis, open_control_selector_win,
     open_logging_window, test_log,
 };
-
 #[tauri::command]
 fn terminal(msg: &str) {
     log::warn!("{:?}", msg);
@@ -30,6 +30,12 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
             init_logger(app.handle().clone()).expect("Failed to initialize logger");
+
+            // updater
+            let handle = app.handle().clone();
+            tauri::async_runtime::spawn(async move {
+                update(handle).await.unwrap();
+            });
 
             app.manage(HistDiffState::new());
             app.manage(ClusterState::new());
