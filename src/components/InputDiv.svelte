@@ -193,7 +193,7 @@
     >
   {/if}
 
-  {#if true}
+  {#if saveReady}
     <div class="flex flex-row p-1 space-x-2">
       <OutputDialogue bind:saveReady />
 
