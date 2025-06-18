@@ -31,6 +31,6 @@
   @reference 'tailwindcss';
 
   .save-btn {
-    @apply cursor-pointer font-bold text-center p-2 mt-4 bg-purple-500 hover:bg-purple-600 border rounded;
+    @apply cursor-pointer font-bold text-center p-2 mt-2 bg-purple-500 hover:bg-purple-600 border rounded;
   }
 </style>

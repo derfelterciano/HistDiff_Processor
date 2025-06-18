@@ -185,11 +185,6 @@
     class="cursor-pointer justify-center mt-4 border-2 rounded-lg px-4 py-1 text-center bg-green-500 hover:bg-green-600"
     disabled={isProcessing}>{isProcessing ? "Processing..." : "Submit"}</button
   >
-
-  {#if saveReady}
-    <OutputDialogue bind:saveReady />
-  {/if}
-
   {#if true}
     <button
       type="button"
@@ -198,17 +193,20 @@
     >
   {/if}
 
-  {#if errorMessage !== ""}
-    <span class="mt-5 text-md text-red-400">{errorMessage}</span>
+  {#if true}
+    <div class="flex flex-row p-1 space-x-2">
+      <OutputDialogue bind:saveReady />
+
+      <button
+        type="button"
+        class="cursor-pointer mt-2 p-2 text-center font-bold bg-rose-400 hover:bg-rose-300 rounded-sm border"
+        onclick={openAnalysis}>Open Analysis Window</button
+      >
+    </div>
   {/if}
 
-  {#if saveReady}
-    <!--TODO: CHANGE THIS TO saveReady-->
-    <button
-      type="button"
-      class="cursor-pointer mt-3 bg-rose-400 hover:bg-rose-300 rounded-sm p-1 border-2"
-      onclick={openAnalysis}>Open Analysis Window</button
-    >
+  {#if errorMessage !== ""}
+    <span class="mt-5 text-md text-red-400">{errorMessage}</span>
   {/if}
 </form>
 
